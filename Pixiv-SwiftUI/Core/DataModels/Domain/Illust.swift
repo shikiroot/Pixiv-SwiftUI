@@ -228,3 +228,5 @@ final class Illusts: Codable {
         try container.encode(restrictionAttributes, forKey: .restrictionAttributes)
     }
 }
+
+extension Illusts: @unchecked Sendable {}

@@ -2,7 +2,7 @@ import Foundation
 import Kingfisher
 
 /// 缓存过期时间配置
-public enum CacheExpiration {
+public enum CacheExpiration: Sendable {
     case seconds(Int)
     case minutes(Int)
     case hours(Int)

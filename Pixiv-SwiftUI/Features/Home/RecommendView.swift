@@ -1,6 +1,7 @@
 import SwiftUI
 
 /// 推荐页面
+@MainActor
 struct RecommendView: View {
     @State private var illusts: [Illusts] = []
     @State private var isLoading = true

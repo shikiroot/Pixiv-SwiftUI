@@ -3,7 +3,7 @@ import SwiftUI
 import Combine
 import Observation
 
-enum NetworkMode: String, Codable, CaseIterable, Identifiable {
+enum NetworkMode: String, Codable, CaseIterable, Identifiable, Sendable {
     case normal
     case direct
 
@@ -37,6 +37,7 @@ enum NetworkMode: String, Codable, CaseIterable, Identifiable {
     }
 }
 
+@MainActor
 @Observable
 final class NetworkModeStore {
     static let shared = NetworkModeStore()
@@ -72,6 +73,7 @@ final class NetworkModeStore {
 }
 
 struct NetworkModeKey: EnvironmentKey {
+    @MainActor
     static let defaultValue: NetworkModeStore = .shared
 }
 

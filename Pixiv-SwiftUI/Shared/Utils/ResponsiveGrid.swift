@@ -1,5 +1,6 @@
 import SwiftUI
 
+@MainActor
 enum ResponsiveGrid {
     static func columnCount(
         for containerWidth: CGFloat,
@@ -87,6 +88,7 @@ enum ResponsiveGrid {
     }
 }
 
+@MainActor
 struct ResponsiveGridModifier: ViewModifier {
     let userSetting: UserSetting?
     @Binding var columnCount: Int
@@ -123,6 +125,7 @@ struct ResponsiveGridModifier: ViewModifier {
     }
 }
 
+@MainActor
 struct ResponsiveUserGridModifier: ViewModifier {
     @Binding var columnCount: Int
     @State private var lastWidth: CGFloat = 0
@@ -149,6 +152,7 @@ struct ResponsiveUserGridModifier: ViewModifier {
     }
 }
 
+@MainActor
 extension View {
     func responsiveGridColumnCount(
         userSetting: UserSetting? = nil,

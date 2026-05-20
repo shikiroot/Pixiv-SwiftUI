@@ -85,6 +85,7 @@ struct SkeletonSpotlightWorkCard: View {
     }
 }
 
+@MainActor
 private func openInBrowser(urlString: String) {
     guard let url = URL(string: urlString) else { return }
     #if os(iOS)
