@@ -16,7 +16,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "85E8CE622EF03BF300AD181E"
-               BuildableName = "Pixiv-SwiftUI.app"
+               BuildableName = "Pixwift.app"
                BlueprintName = "Pixiv-SwiftUI"
                ReferencedContainer = "container:Pixiv-SwiftUI.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "85E8CE622EF03BF300AD181E"
-            BuildableName = "Pixiv-SwiftUI.app"
+            BuildableName = "Pixwift.app"
             BlueprintName = "Pixiv-SwiftUI"
             ReferencedContainer = "container:Pixiv-SwiftUI.xcodeproj">
          </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "85E8CE622EF03BF300AD181E"
-            BuildableName = "Pixiv-SwiftUI.app"
+            BuildableName = "Pixwift.app"
             BlueprintName = "Pixiv-SwiftUI"
             ReferencedContainer = "container:Pixiv-SwiftUI.xcodeproj">
          </BuildableReference>

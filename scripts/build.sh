@@ -53,8 +53,8 @@ if [ "$SHOW_HELP" = true ]; then
     echo "  -h, --help        显示帮助信息"
     echo ""
     echo "输出产物:"
-    echo "  build/Pixiv-SwiftUI.ipa   (iOS)"
-    echo "  build/Pixiv-SwiftUI.dmg   (macOS)"
+    echo "  build/Pixwift.ipa   (iOS)"
+    echo "  build/Pixwift.dmg   (macOS)"
     exit 0
 fi
 
@@ -117,11 +117,11 @@ if [ "$BUILD_SUCCESS" = true ]; then
     echo "全部构建成功"
     echo ""
     if [ "$IPA_ONLY" = true ]; then
-        echo "  iOS IPA:              build/Pixiv-SwiftUI.ipa"
+        echo "  iOS IPA:              build/Pixwift.ipa"
     fi
     if [ "$DMG_ONLY" = true ]; then
-        echo "  macOS DMG (arm64):    build/Pixiv-SwiftUI-arm64.dmg"
-        echo "  macOS DMG (x86_64):   build/Pixiv-SwiftUI-x86_64.dmg"
+        echo "  macOS DMG (arm64):    build/Pixwift-arm64.dmg"
+        echo "  macOS DMG (x86_64):   build/Pixwift-x86_64.dmg"
     fi
 else
     echo "部分构建失败，请检查上方日志"

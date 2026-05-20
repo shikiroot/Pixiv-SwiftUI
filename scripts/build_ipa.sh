@@ -50,6 +50,7 @@ fi
 
 JOBS=$(sysctl -n hw.ncpu)
 DERIVED_DATA_PATH="build/derived_data"
+APP_NAME="Pixwift"
 
 # 确保 build 目录存在
 mkdir -p build
@@ -83,7 +84,7 @@ echo "编译完成，开始打包..."
 rm -rf build/Payload
 mkdir -p build/Payload
 
-APP_PATH=$(find "$DERIVED_DATA_PATH" -name "Pixiv-SwiftUI.app" -type d -path "*/Release-iphoneos/*" | head -n 1)
+APP_PATH=$(find "$DERIVED_DATA_PATH" -name "${APP_NAME}.app" -type d -path "*/Release-iphoneos/*" | head -n 1)
 
 if [ -z "$APP_PATH" ]; then
     echo "错误：找不到 Release-iphoneos 的构建产物"
@@ -105,17 +106,17 @@ fi
 echo "找到构建产物: $APP_PATH"
 cp -r "$APP_PATH" build/Payload/
 
-if [ ! -f "build/Payload/Pixiv-SwiftUI.app/Pixiv-SwiftUI" ]; then
+if [ ! -f "build/Payload/${APP_NAME}.app/${APP_NAME}" ]; then
     echo "错误：复制后的 .app 中缺少可执行文件"
     exit 1
 fi
 
 cd build
-rm -f Pixiv-SwiftUI.ipa
-zip -9 -r Pixiv-SwiftUI.ipa Payload
+rm -f "${APP_NAME}.ipa"
+zip -9 -r "${APP_NAME}.ipa" Payload
 
 cd ..
 
 echo "=========================================="
-echo "IPA 打包完成: build/Pixiv-SwiftUI.ipa"
+echo "IPA 打包完成: build/${APP_NAME}.ipa"
 echo "=========================================="

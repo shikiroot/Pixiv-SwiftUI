@@ -117,7 +117,7 @@ actor WebDAVClient {
         request.httpMethod = method
         request.httpBody = body
         request.setValue(authorizationHeader(), forHTTPHeaderField: "Authorization")
-        request.setValue("Pixiv-SwiftUI/1.0", forHTTPHeaderField: "User-Agent")
+        request.setValue("Pixwift/1.0", forHTTPHeaderField: "User-Agent")
 
         for (key, value) in headers {
             request.setValue(value, forHTTPHeaderField: key)

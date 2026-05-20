@@ -4,7 +4,7 @@ import CryptoKit
 struct WebDAVSyncConfiguration: Codable, Equatable, Sendable {
     var serverURLString: String = ""
     var username: String = ""
-    var remoteDirectory: String = "Pixiv-SwiftUI"
+    var remoteDirectory: String = "Pixwift"
 
     var normalizedRemoteDirectory: String {
         remoteDirectory
@@ -315,7 +315,7 @@ enum WebDAVSyncError: LocalizedError {
 enum WebDAVSyncPreferences {
     private static let configurationKey = "webdav_sync_configuration"
     private static let lastOperationKeyPrefix = "webdav_sync_last_operation_"
-    private static let keychainService = (Bundle.main.bundleIdentifier ?? "Pixiv-SwiftUI") + ".webdav-sync"
+    private static let keychainService = (Bundle.main.bundleIdentifier ?? "Pixwift") + ".webdav-sync"
     private static let keychainAccount = "default"
 
     static func loadConfiguration() -> WebDAVSyncConfiguration {

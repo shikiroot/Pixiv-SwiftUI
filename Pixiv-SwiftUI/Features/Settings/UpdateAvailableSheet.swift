@@ -64,7 +64,7 @@ struct UpdateAvailableSheet: View {
             version: "0.11.2",
             releaseName: "v0.11.2",
             releaseNotes: "修复了一些 bug\n新增了功能\n优化了性能",
-            releaseUrl: "https://github.com/Eslzzyl/Pixiv-SwiftUI/releases",
+            releaseUrl: "https://github.com/shikiroot/Pixiv-SwiftUI/releases",
             downloadUrl: nil
         ),
         isPresented: .constant(true)

@@ -2,11 +2,11 @@ import SwiftUI
 
 #if os(macOS)
 struct HelpMenuCommands: Commands {
-    private let githubRepo = "https://github.com/U2FsdGVkX1/Pixiv-SwiftUI"
+    private let githubRepo = "https://github.com/shikiroot/Pixiv-SwiftUI"
 
     var body: some Commands {
         CommandGroup(replacing: .help) {
-            Button(String(localized: "Pixiv-SwiftUI 帮助")) {
+            Button(String(localized: "Pixwift 帮助")) {
                 if let url = URL(string: "\(githubRepo)/wiki") {
                     NSWorkspace.shared.open(url)
                 }

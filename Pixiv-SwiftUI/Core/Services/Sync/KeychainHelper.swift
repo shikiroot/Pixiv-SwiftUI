@@ -49,7 +49,7 @@ enum KeychainHelper {
     // MARK: - Constants
 
     enum Service {
-        static let webDAV = (Bundle.main.bundleIdentifier ?? "Pixiv-SwiftUI") + ".webdav-sync"
+        static let webDAV = (Bundle.main.bundleIdentifier ?? "Pixwift") + ".webdav-sync"
         static let authTokens = (Bundle.main.bundleIdentifier ?? "com.pixiv.auth.tokens") + ".auth"
     }
 

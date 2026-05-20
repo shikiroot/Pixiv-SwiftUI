@@ -6,7 +6,7 @@ struct AppMenuCommands: Commands {
 
     var body: some Commands {
         CommandGroup(replacing: .appInfo) {
-            Button(String(localized: "关于 Pixiv-SwiftUI")) {
+            Button(String(localized: "关于 Pixwift")) {
                 showAboutPanel()
             }
         }
@@ -21,7 +21,7 @@ struct AppMenuCommands: Commands {
 
     private func showAboutPanel() {
         let alert = NSAlert()
-        alert.messageText = "Pixiv-SwiftUI"
+        alert.messageText = "Pixwift"
         alert.informativeText = """
         版本: \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")
         构建: \(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1")

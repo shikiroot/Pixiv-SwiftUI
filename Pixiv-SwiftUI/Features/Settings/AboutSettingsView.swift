@@ -22,7 +22,7 @@ struct AboutSettingsView: View {
                 .frame(width: iconSize, height: iconSize)
                 .padding(.top, topPadding)
 
-            Text("Pixiv-SwiftUI")
+            Text("Pixwift")
                 .font(.title2)
                 .fontWeight(.semibold)
                 .padding(.bottom, bottomPadding)
@@ -165,7 +165,7 @@ struct AboutSettingsView: View {
     private var linksSection: some View {
         Section("链接") {
             // swiftlint:disable:next force_unwrapping
-            Link(destination: URL(string: "https://github.com/anomalyco/Pixiv-SwiftUI")!) {
+            Link(destination: URL(string: "https://github.com/shikiroot/Pixiv-SwiftUI")!) {
                 HStack {
                     Text("GitHub")
                     Spacer()

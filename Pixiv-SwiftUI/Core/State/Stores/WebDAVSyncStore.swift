@@ -8,7 +8,7 @@ final class WebDAVSyncStore {
 
     var serverURLString = ""
     var username = ""
-    var remoteDirectory = "Pixiv-SwiftUI"
+    var remoteDirectory = "Pixwift"
     var password = ""
 
     var isBusy = false

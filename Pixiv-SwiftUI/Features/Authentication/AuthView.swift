@@ -44,7 +44,7 @@ struct AuthView: View {
                         .font(.system(size: 48))
                         .foregroundColor(themeManager.currentColor)
 
-                    Text(String(localized: "Pixiv-SwiftUI"))
+                    Text(String(localized: "Pixwift"))
                         .font(.system(size: 36, weight: .bold))
 
                     Text(String(localized: "优雅的插画社区客户端"))

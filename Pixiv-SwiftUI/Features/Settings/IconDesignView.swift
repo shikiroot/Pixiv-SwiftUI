@@ -23,7 +23,7 @@ struct IconExportView: View {
                 .frame(width: 300, height: 300)
                 .shadow(radius: 10)
 
-            Text("Pixiv-SwiftUI 图标导出工具")
+            Text("Pixwift 图标导出工具")
                 .font(.headline)
 
             Button("导出 1024x1024 PNG (无 Alpha)") {

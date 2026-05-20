@@ -28,7 +28,7 @@ jobs:
         id: arm64
         run: |
           VERSION="${GITHUB_REF#refs/tags/}"
-          URL="https://github.com/Eslzzyl/Pixiv-SwiftUI/releases/download/v${VERSION}/Pixiv-SwiftUI-arm64.dmg"
+          URL="https://github.com/${{ github.repository_owner }}/Pixiv-SwiftUI/releases/download/v${VERSION}/Pixwift-arm64.dmg"
           curl -sL "$URL" -o /tmp/pixiv-swiftui-arm64.dmg
           SHA=$(sha256sum /tmp/pixiv-swiftui-arm64.dmg | awk '{print $1}')
           echo "sha=$SHA" >> $GITHUB_OUTPUT
@@ -38,7 +38,7 @@ jobs:
         id: x86
         run: |
           VERSION="${GITHUB_REF#refs/tags/}"
-          URL="https://github.com/Eslzzyl/Pixiv-SwiftUI/releases/download/v${VERSION}/Pixiv-SwiftUI-x86_64.dmg"
+          URL="https://github.com/${{ github.repository_owner }}/Pixiv-SwiftUI/releases/download/v${VERSION}/Pixwift-x86_64.dmg"
           curl -sL "$URL" -o /tmp/pixiv-swiftui-x86_64.dmg
           SHA=$(sha256sum /tmp/pixiv-swiftui-x86_64.dmg | awk '{print $1}')
           echo "sha=$SHA" >> $GITHUB_OUTPUT

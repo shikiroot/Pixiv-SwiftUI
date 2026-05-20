@@ -16,7 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		853805DB2F30FA23009EDD51 /* Pixiv-SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pixiv-SwiftUI.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		853805DB2F30FA23009EDD51 /* Pixwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pixwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		85F253A72F30A8E500DA40B4 /* tags.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = tags.json; path = Resources/tags.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -49,7 +49,7 @@
 			children = (
 				85E8CE652EF03BF300AD181E /* Pixiv-SwiftUI */,
 				85F253A72F30A8E500DA40B4 /* tags.json */,
-				853805DB2F30FA23009EDD51 /* Pixiv-SwiftUI.app */,
+				853805DB2F30FA23009EDD51 /* Pixwift.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -80,8 +80,8 @@
 				854758362F2F1B7F00F0736E /* ZIPFoundation */,
 				854CDC7E2F4C3377009EB48D /* SwiftSoup */,
 			);
-			productName = "Pixiv-SwiftUI";
-			productReference = 853805DB2F30FA23009EDD51 /* Pixiv-SwiftUI.app */;
+			productName = Pixwift;
+			productReference = 853805DB2F30FA23009EDD51 /* Pixwift.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -193,7 +193,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = 93FYVZ9LYD;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -260,7 +260,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
-				DEVELOPMENT_TEAM = 93FYVZ9LYD;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -289,11 +289,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "Pixiv-SwiftUI/Pixiv-SwiftUI.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Pixiv-SwiftUI/Pixwift.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 93FYVZ9LYD;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = YES;
@@ -301,6 +301,8 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Pixwift;
+				INFOPLIST_KEY_CFBundleName = Pixwift;
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "需要访问相册以保存插画图片";
 				"INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription[sdk=iphoneos*]" = "需要访问相册以保存插画图片";
 				"INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription[sdk=iphonesimulator*]" = "需要访问相册以保存插画图片";
@@ -321,8 +323,8 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 0.13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.eu.eslzzyl.Pixiv-SwiftUI";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.shikiroot.pixwift;
+				PRODUCT_NAME = Pixwift;
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -343,11 +345,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "Pixiv-SwiftUI/Pixiv-SwiftUI.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Pixiv-SwiftUI/Pixwift.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 93FYVZ9LYD;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = YES;
@@ -355,6 +357,8 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Pixwift;
+				INFOPLIST_KEY_CFBundleName = Pixwift;
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "需要访问相册以保存插画图片";
 				"INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription[sdk=iphoneos*]" = "需要访问相册以保存插画图片";
 				"INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription[sdk=iphonesimulator*]" = "需要访问相册以保存插画图片";
@@ -375,8 +379,8 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 0.13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.eu.eslzzyl.Pixiv-SwiftUI";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.shikiroot.pixwift;
+				PRODUCT_NAME = Pixwift;
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;

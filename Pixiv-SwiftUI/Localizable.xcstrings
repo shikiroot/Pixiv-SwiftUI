@@ -695,38 +695,38 @@
         }
       }
     },
-    "Pixiv-SwiftUI" : {
+    "Pixwift" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pixiv-SwiftUI"
+            "value" : "Pixwift"
           }
         }
       }
     },
-    "Pixiv-SwiftUI 图标导出工具" : {
+    "Pixwift 图标导出工具" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pixiv-SwiftUI Icon Export Tool"
+            "value" : "Pixwift Icon Export Tool"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pixiv-SwiftUI 图标导出工具"
+            "value" : "Pixwift 图标导出工具"
           }
         }
       }
     },
-    "Pixiv-SwiftUI 帮助" : {
+    "Pixwift 帮助" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pixiv-SwiftUI Help"
+            "value" : "Pixwift Help"
           }
         }
       }
@@ -1625,12 +1625,12 @@
         }
       }
     },
-    "关于 Pixiv-SwiftUI" : {
+    "关于 Pixwift" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "About Pixiv-SwiftUI"
+            "value" : "About Pixwift"
           }
         }
       }

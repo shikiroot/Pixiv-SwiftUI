@@ -38,11 +38,12 @@ if [ "$SHOW_HELP" = true ]; then
     exit 0
 fi
 
-PROJECT_NAME="Pixiv-SwiftUI"
+PROJECT_FILE="Pixiv-SwiftUI.xcodeproj"
+APP_NAME="Pixwift"
 SCHEME_NAME="Release"
 CONFIG="Release"
 BUILD_DIR="build"
-DMG_NAME="Pixiv-SwiftUI"
+DMG_NAME="Pixwift"
 ARCHS=("arm64" "x86_64")
 DERIVED_DATA_PATH="build/derived_data_macos"
 
@@ -69,7 +70,7 @@ for ARCH in "${ARCHS[@]}"; do
 
     XCODEBUILD_CMD=(
         xcodebuild
-        -project "${PROJECT_NAME}.xcodeproj"
+        -project "${PROJECT_FILE}"
         -scheme "${SCHEME_NAME}"
         -sdk macosx
         -configuration "${CONFIG}"
@@ -94,14 +95,14 @@ echo "编译完成，开始打包..."
 
 mkdir -p "${BUILD_DIR}/dmg_root_${ARCH}"
 
-APP_PATH=$(find "$ARCH_DERIVED_DATA_PATH" -name "${PROJECT_NAME}.app" -type d -path "*/Build/Products/${CONFIG}/*" | head -n 1)
+APP_PATH=$(find "$ARCH_DERIVED_DATA_PATH" -name "${APP_NAME}.app" -type d -path "*/Build/Products/${CONFIG}/*" | head -n 1)
 
 if [ -z "$APP_PATH" ]; then
     echo "错误：找不到 ${ARCH} 架构的构建产物"
     exit 1
 fi
 
-APP_BINARY="${APP_PATH}/Contents/MacOS/${PROJECT_NAME}"
+APP_BINARY="${APP_PATH}/Contents/MacOS/${APP_NAME}"
 if [ ! -f "$APP_BINARY" ]; then
     echo "错误：找不到可执行文件: $APP_BINARY"
     exit 1
@@ -123,7 +124,7 @@ if [ -f "${BUILD_DIR}/${DMG_NAME}-${ARCH}.dmg" ]; then
 fi
 
 echo "正在生成 DMG 文件..."
-hdiutil create -volname "${PROJECT_NAME} (${ARCH}) Installer" \
+hdiutil create -volname "${APP_NAME} (${ARCH}) Installer" \
                -srcfolder "${BUILD_DIR}/dmg_root_${ARCH}" \
                -ov -format UDZO \
                "${BUILD_DIR}/${DMG_NAME}-${ARCH}.dmg" 2>/dev/null

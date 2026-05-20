@@ -86,7 +86,7 @@ struct AppUpdateInfo {
 final class UpdateChecker {
     static let shared = UpdateChecker()
 
-    private let githubAPIURL = "https://api.github.com/repos/Eslzzyl/Pixiv-SwiftUI/releases/latest"
+    private let githubAPIURL = "https://api.github.com/repos/shikiroot/Pixiv-SwiftUI/releases/latest"
     private let session: URLSession
 
     private init() {
@@ -138,7 +138,7 @@ final class UpdateChecker {
     }
 
     private func checkForUpdateFromHTML() async -> AppUpdateInfo? {
-        let htmlURL = "https://github.com/Eslzzyl/Pixiv-SwiftUI/releases/latest"
+        let htmlURL = "https://github.com/shikiroot/Pixiv-SwiftUI/releases/latest"
 
         guard let url = URL(string: htmlURL) else {
             return nil
@@ -198,9 +198,9 @@ final class UpdateChecker {
 
     private func findDownloadUrl(for release: GitHubRelease) -> String? {
         #if os(macOS)
-        let preferredNames = ["Pixiv-SwiftUI-arm64.dmg", "Pixiv-SwiftUI-x86_64.dmg"]
+        let preferredNames = ["Pixwift-arm64.dmg", "Pixwift-x86_64.dmg"]
         #elseif os(iOS)
-        let preferredNames = ["Pixiv-SwiftUI.ipa"]
+        let preferredNames = ["Pixwift.ipa"]
         #else
         let preferredNames: [String] = []
         #endif
