@@ -39,13 +39,14 @@ jobs:
           xcodebuild -showsdks
 
       - name: Build unsigned ipa with project script
-        shell: zsh
+        shell: bash
         run: |
           set -euo pipefail
           ARTIFACTS_DIR="$GITHUB_WORKSPACE/artifacts"
           EXPORT_DIR="$ARTIFACTS_DIR/unsigned-ipa"
           mkdir -p "$ARTIFACTS_DIR"
           mkdir -p "$EXPORT_DIR"
+          touch "$ARTIFACTS_DIR/build-ipa.log"
           ./scripts/build_ipa.sh --clean -v 2>&1 | tee "$ARTIFACTS_DIR/build-ipa.log"
           cp "build/$APP_NAME.ipa" "$EXPORT_DIR/$APP_NAME-unsigned.ipa"
           ls -lh "$EXPORT_DIR/$APP_NAME-unsigned.ipa"
