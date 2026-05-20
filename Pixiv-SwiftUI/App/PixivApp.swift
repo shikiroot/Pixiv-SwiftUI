@@ -24,18 +24,12 @@ struct PixivApp: App {
 
     var body: some Scene {
         WindowGroup(id: "main") {
-            ZStack {
-                if initializer.isLaunching || initializer.accountStore == nil {
-                    LaunchScreenView()
-                } else {
-                    ContentView()
-                        .environment(initializer.accountStore ?? AccountStore.shared)
-                        .environment(initializer.illustStore ?? IllustStore.shared)
-                        .environment(initializer.userSettingStore ?? UserSettingStore.shared)
-                        .environment(ThemeManager.shared)
-                        .modelContainer(DataContainer.shared.modelContainer)
-                }
-            }
+            ContentView()
+                .environment(initializer.accountStore ?? AccountStore.shared)
+                .environment(initializer.illustStore ?? IllustStore.shared)
+                .environment(initializer.userSettingStore ?? UserSettingStore.shared)
+                .environment(ThemeManager.shared)
+                .modelContainer(DataContainer.shared.modelContainer)
             .sheet(isPresented: $showUpdateSheet) {
                 if let info = pendingUpdateInfo {
                     UpdateAvailableSheet(updateInfo: info, isPresented: $showUpdateSheet)

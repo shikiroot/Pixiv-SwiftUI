@@ -7,7 +7,6 @@ import Observation
 final class AppInitializer {
     static let shared = AppInitializer()
 
-    var isLaunching = true
     var accountStore: AccountStore?
     var illustStore: IllustStore?
     var userSettingStore: UserSettingStore?
@@ -37,18 +36,10 @@ final class AppInitializer {
         self.illustStore = iStore
         self.userSettingStore = uStore
 
-        // 5. 稍微延迟以确保 UI 衔接自然
-        try? await Task.sleep(for: .milliseconds(200))
-
-        // 6. 结束启动状态
-        withAnimation(.easeInOut(duration: 0.4)) {
-            self.isLaunching = false
-        }
-
-        // 7. 后续任务
+        // 5. 后续任务
         AccountStore.shared.markLoginAttempted()
 
-        // 8. 检查更新（后台执行）
+        // 6. 检查更新（后台执行）
         checkForUpdateOnLaunch()
     }
 
