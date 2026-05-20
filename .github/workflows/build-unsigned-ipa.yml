@@ -1,0 +1,68 @@
+name: Build Unsigned IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - tweak
+
+permissions:
+  contents: read
+
+jobs:
+  build-unsigned-ipa:
+    runs-on: macos-15
+    timeout-minutes: 45
+    env:
+      PROJECT_PATH: Pixiv-SwiftUI.xcodeproj
+      SCHEME: Release
+      ARCHIVE_PATH: ${{ runner.temp }}/Pixiv-SwiftUI.xcarchive
+      EXPORT_DIR: ${{ runner.temp }}/unsigned-ipa
+      APP_NAME: Pixiv-SwiftUI
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Archive iOS app without code signing
+        run: |
+          set -eo pipefail
+          xcodebuild \
+            -project "$PROJECT_PATH" \
+            -scheme "$SCHEME" \
+            -configuration Release \
+            -destination "generic/platform=iOS" \
+            -archivePath "$ARCHIVE_PATH" \
+            clean archive \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            DEVELOPMENT_TEAM="" \
+            | tee "$RUNNER_TEMP/xcodebuild-archive.log"
+
+      - name: Package unsigned ipa
+        run: |
+          set -euo pipefail
+          APP_PATH="$(find "$ARCHIVE_PATH/Products/Applications" -maxdepth 1 -name '*.app' -print -quit)"
+
+          if [ -z "$APP_PATH" ]; then
+            echo "Archived app not found"
+            exit 1
+          fi
+
+          mkdir -p "$EXPORT_DIR/Payload"
+          cp -R "$APP_PATH" "$EXPORT_DIR/Payload/"
+          cd "$EXPORT_DIR"
+          ditto -c -k --sequesterRsrc --keepParent Payload "$APP_NAME-unsigned.ipa"
+          ls -lh "$APP_NAME-unsigned.ipa"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pixiv-SwiftUI-unsigned-ipa
+          path: |
+            ${{ env.EXPORT_DIR }}/${{ env.APP_NAME }}-unsigned.ipa
+            ${{ runner.temp }}/xcodebuild-archive.log
+          if-no-files-found: error
