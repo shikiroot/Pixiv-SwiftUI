@@ -2,6 +2,7 @@
 
 flutter/
 build/
-Resources/
+Resources/*
+!Resources/tags.json
 
 *.xcuserstate
