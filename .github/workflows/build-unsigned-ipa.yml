@@ -1,5 +1,5 @@
-name: Build Unsigned IPA
-run-name: ${{ github.event_name == 'workflow_dispatch' && format('Manual IPA build ({0})', github.event.inputs.ref_name) || format('Build Unsigned IPA ({0})', github.ref_name) }}
+name: Release Unsigned IPA
+run-name: ${{ github.event_name == 'workflow_dispatch' && format('Manual release build ({0})', github.event.inputs.ref_name) || format('Release Unsigned IPA ({0})', github.ref_name) }}
 
 on:
   workflow_dispatch:
@@ -15,14 +15,14 @@ on:
         default: Pixwift-unsigned-ipa
         type: string
   push:
-    branches:
-      - tweak
+    tags:
+      - "v*"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  build-unsigned-ipa:
+  release-unsigned-ipa:
     runs-on: macos-26
     timeout-minutes: 45
     env:
@@ -39,6 +39,7 @@ jobs:
           xcodebuild -showsdks
 
       - name: Build unsigned ipa with project script
+        id: build
         shell: bash
         run: |
           set -euo pipefail
@@ -48,15 +49,34 @@ jobs:
           mkdir -p "$EXPORT_DIR"
           touch "$ARTIFACTS_DIR/build-ipa.log"
           ./scripts/build_ipa.sh --clean -v 2>&1 | tee "$ARTIFACTS_DIR/build-ipa.log"
-          cp "build/$APP_NAME.ipa" "$EXPORT_DIR/$APP_NAME-unsigned.ipa"
-          ls -lh "$EXPORT_DIR/$APP_NAME-unsigned.ipa"
+          RELEASE_NAME="${GITHUB_REF_NAME:-manual}"
+          OUTPUT_IPA="$EXPORT_DIR/$APP_NAME-$RELEASE_NAME-unsigned.ipa"
+          cp "build/$APP_NAME.ipa" "$OUTPUT_IPA"
+          echo "output_ipa=$OUTPUT_IPA" >> "$GITHUB_OUTPUT"
+          ls -lh "$OUTPUT_IPA"
+
+      - name: Publish release asset
+        if: ${{ github.event_name == 'push' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
+          files: |
+            ${{ steps.build.outputs.output_ipa }}
+            artifacts/build-ipa.log
 
       - name: Upload artifacts
-        if: ${{ always() }}
+        if: ${{ success() }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.artifact_name || 'Pixwift-unsigned-ipa' }}
-          path: |
-            artifacts/unsigned-ipa/${{ env.APP_NAME }}-unsigned.ipa
-            artifacts/build-ipa.log
+          path: ${{ steps.build.outputs.output_ipa }}
+          if-no-files-found: error
+
+      - name: Upload build log
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-ipa-log
+          path: artifacts/build-ipa.log
           if-no-files-found: error
