@@ -69,6 +69,10 @@ XCODEBUILD_CMD=(
     -jobs "$JOBS"
 )
 
+if [[ "${CI:-}" == "true" ]]; then
+    XCODEBUILD_CMD+=(-skipPackagePluginValidation)
+fi
+
 echo "正在运行 xcodebuild (iOS)..."
 
 if [ "$CLEAN" = true ]; then
