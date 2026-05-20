@@ -7,14 +7,19 @@ import Observation
 final class AppInitializer {
     static let shared = AppInitializer()
 
+    var isLaunching = true
     var accountStore: AccountStore?
     var illustStore: IllustStore?
     var userSettingStore: UserSettingStore?
+    private var hasInitialized = false
 
     private init() {}
 
     /// 执行应用初始化序列
     func performInitialization() async {
+        guard !hasInitialized else { return }
+        hasInitialized = true
+
         // 1. 配置基础服务
         CacheConfig.configureKingfisher()
         UgoiraStore.cleanupLegacyCache()
@@ -36,10 +41,16 @@ final class AppInitializer {
         self.illustStore = iStore
         self.userSettingStore = uStore
 
-        // 5. 后续任务
-        AccountStore.shared.markLoginAttempted()
+        // 5. 延迟结束启动占位，避免初始化完成前短暂露出登录页
+        try? await Task.sleep(for: .milliseconds(180))
 
-        // 6. 检查更新（后台执行）
+        // 6. 进入正常显示状态
+        AccountStore.shared.markLoginAttempted()
+        withAnimation(.easeInOut(duration: 0.2)) {
+            self.isLaunching = false
+        }
+
+        // 7. 检查更新（后台执行）
         checkForUpdateOnLaunch()
     }
 
