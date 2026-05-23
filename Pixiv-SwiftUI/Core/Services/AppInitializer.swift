@@ -34,21 +34,29 @@ final class AppInitializer {
         await aStore.loadAccountsAsync()
         await uStore.loadUserSettingAsync()
 
-        // 4. 更新初始化状态
+        // 4. 账户加载完成后，主动刷新已过期的 token（启动画面期间进行）
+        if aStore.isLoggedIn {
+            await aStore.refreshTokenIfExpired()
+        }
+
+        // 5. 设置加载完成后刷新主题色（此时 UserSetting 已就绪）
+        ThemeManager.shared.updateThemeColor()
+
+        // 6. 更新初始化状态
         self.accountStore = aStore
         self.illustStore = iStore
         self.userSettingStore = uStore
 
-        // 5. 延迟结束启动占位，避免初始化完成前短暂露出登录页
+        // 7. 延迟结束启动占位，避免初始化完成前短暂露出登录页
         try? await Task.sleep(for: .milliseconds(180))
 
-        // 6. 进入正常显示状态
+        // 8. 进入正常显示状态
         AccountStore.shared.markLoginAttempted()
         withAnimation(.easeInOut(duration: 0.2)) {
             self.isLaunching = false
         }
 
-        // 7. 检查更新（后台执行）
+        // 9. 检查更新（后台执行）
         checkForUpdateOnLaunch()
     }
 
