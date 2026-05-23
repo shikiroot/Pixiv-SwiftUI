@@ -408,6 +408,7 @@ struct IllustDetailView: View {
                     } label: {
                         Image(systemName: "ellipsis")
                     }
+                    .menuIndicator(.hidden)
                 }
             }
             .onAppear {

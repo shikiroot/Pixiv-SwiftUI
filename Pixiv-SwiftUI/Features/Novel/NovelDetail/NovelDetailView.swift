@@ -292,6 +292,7 @@ struct NovelDetailView: View {
                 } label: {
                     Image(systemName: "ellipsis")
                 }
+                .menuIndicator(.hidden)
             }
         }
         .toast(isPresented: $showCopyToast, message: String(localized: "已复制"))
