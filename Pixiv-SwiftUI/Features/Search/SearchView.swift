@@ -280,6 +280,7 @@ struct SearchView: View {
                 ToolbarItem {
                     ProfileButton(accountStore: accountStore, isPresented: $showProfilePanel)
                 }
+                .hideSharedBackgroundIfAvailable()
                 #endif
             }
             .onAppear {
