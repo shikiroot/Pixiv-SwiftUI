@@ -26,16 +26,16 @@ struct PixivApp: App {
     var body: some Scene {
         WindowGroup(id: "main") {
             ZStack {
-                ContentView()
-                    .environment(initializer.accountStore ?? AccountStore.shared)
-                    .environment(initializer.illustStore ?? IllustStore.shared)
-                    .environment(initializer.userSettingStore ?? UserSettingStore.shared)
-                    .environment(ThemeManager.shared)
-                    .modelContainer(DataContainer.shared.modelContainer)
-
-                if initializer.isLaunching || initializer.accountStore == nil || initializer.userSettingStore == nil {
+                if initializer.isLaunching || initializer.accountStore == nil || initializer.userSettingStore == nil || initializer.modelContainer == nil {
                     LaunchScreenView()
                         .transition(.opacity)
+                } else {
+                    ContentView()
+                        .environment(initializer.accountStore ?? AccountStore.shared)
+                        .environment(initializer.illustStore ?? IllustStore.shared)
+                        .environment(initializer.userSettingStore ?? UserSettingStore.shared)
+                        .environment(ThemeManager.shared)
+                        .modelContainer(initializer.modelContainer ?? DataContainer.shared.modelContainer)
                 }
             }
             .animation(.easeInOut(duration: 0.2), value: initializer.isLaunching)

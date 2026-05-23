@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 import Observation
 
 /// 应用启动初始化器，负责协调启动过程中的各种任务
@@ -12,6 +13,7 @@ final class AppInitializer {
     var illustStore: IllustStore?
     var userSettingStore: UserSettingStore?
     private var hasInitialized = false
+    var modelContainer: ModelContainer?
 
     private init() {}
 
@@ -20,9 +22,9 @@ final class AppInitializer {
         guard !hasInitialized else { return }
         hasInitialized = true
 
-        // 1. 配置基础服务
-        CacheConfig.configureKingfisher()
-        UgoiraStore.cleanupLegacyCache()
+        // 1. 初始化 SwiftData 容器（此时 LaunchScreenView 已显示，不会阻塞首帧）
+        let container = DataContainer.shared.modelContainer
+        self.modelContainer = container
 
         // 2. 初始化核心 Store
         let aStore = AccountStore.shared
@@ -56,6 +58,11 @@ final class AppInitializer {
             self.isLaunching = false
         }
 
+        // 8. 后台配置基础服务（不阻塞启动）
+        Task {
+            CacheConfig.configureKingfisher()
+            UgoiraStore.cleanupLegacyCache()
+        }
         // 9. 检查更新（后台执行）
         checkForUpdateOnLaunch()
     }

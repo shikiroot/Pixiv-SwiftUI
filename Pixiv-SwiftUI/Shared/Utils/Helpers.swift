@@ -484,6 +484,7 @@ struct Validator {
         return !username.trimmingCharacters(in: .whitespaces).isEmpty && username.count >= 3
     }
 }
+
 /// 懒加载视图包装器 — 将视图的创建延迟到 body 首次渲染时
 struct LazyView<Content: View>: View {
     private let build: () -> Content
