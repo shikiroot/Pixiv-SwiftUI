@@ -540,9 +540,19 @@ struct IllustWaterfallView: View {
 
     @State private var dynamicColumnCount: Int = ResponsiveGrid.initialColumnCount(userSetting: UserSettingStore.shared.userSetting)
     @State private var prefetchTracker = PrefetchTracker()
+    @State private var filteredIllusts: [Illusts] = []
+    @State private var shouldBlurFlags: [Bool] = []
 
-    private var filteredIllusts: [Illusts] {
-        settingStore.filterIllusts(illusts)
+    private func recalculateFilteredIllusts() {
+        filteredIllusts = settingStore.filterIllusts(illusts)
+        shouldBlurFlags = filteredIllusts.map { settingStore.userSetting.shouldBlurIllust($0) }
+    }
+
+    private func shouldBlurFromCache(for illust: Illusts) -> Bool {
+        guard let index = filteredIllusts.firstIndex(where: { $0.id == illust.id }),
+              index < shouldBlurFlags.count
+        else { return false }
+        return shouldBlurFlags[index]
     }
 
     var body: some View {
@@ -570,9 +580,10 @@ struct IllustWaterfallView: View {
                                 columnCount: dynamicColumnCount,
                                 columnWidth: columnWidth,
                                 feedPreviewQuality: settingStore.userSetting.feedPreviewQuality,
-                                shouldBlur: settingStore.userSetting.shouldBlurIllust(illust),
+                                shouldBlur: shouldBlurFromCache(for: illust),
                                 accentColor: themeManager.currentColor
                             )
+                            .equatable()
                         }
                         .buttonStyle(.plain)
                         .onAppear {

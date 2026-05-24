@@ -4,6 +4,10 @@ import SwiftUI
 @MainActor
 struct RecommendView: View {
     @State private var illusts: [Illusts] = []
+    /// 缓存过滤结果，避免每次 body 重求值时全量重跑 O(n) filterIllusts()
+    @State private var filteredIllusts: [Illusts] = []
+    /// 预计算 shouldBlur，避免在 body 求值路径中读取 settingStore
+    @State private var shouldBlurFlags: [Bool] = []
     @State private var isLoading = true
     @State private var nextUrl: String?
     @State private var hasMoreData = true
@@ -32,18 +36,16 @@ struct RecommendView: View {
     private let expiration: CacheExpiration = .minutes(5)
     private let usersCacheKey = "recommend_users_0"
 
-    private var filteredIllusts: [Illusts] {
+    /// 重新计算 filteredIllusts + shouldBlurFlags 缓存
+    private func recalculateFilteredIllusts() {
         let base = settingStore.filterIllusts(illusts)
-        let result: [Illusts]
         switch contentType {
-        case .all:
-            result = base
+        case .all, .manga:
+            filteredIllusts = base
         case .illust:
-            result = base.filter { $0.type != "manga" }
-        case .manga:
-            result = base
+            filteredIllusts = base.filter { $0.type != "manga" }
         }
-        return result
+        shouldBlurFlags = filteredIllusts.map { settingStore.userSetting.shouldBlurIllust($0) }
     }
 
     private var isLoggedIn: Bool {
@@ -141,9 +143,10 @@ struct RecommendView: View {
                                 columnWidth: columnWidth,
                                 expiration: DefaultCacheExpiration.recommend,
                                 feedPreviewQuality: settingStore.userSetting.feedPreviewQuality,
-                                shouldBlur: settingStore.userSetting.shouldBlurIllust(illust),
+                                shouldBlur: shouldBlur(for: illust),
                                 accentColor: themeManager.currentColor
                             )
+                            .equatable()
                         }
                         .buttonStyle(.plain)
                         .onAppear {
@@ -162,9 +165,9 @@ struct RecommendView: View {
                                 .id(nextUrl)
                                 .onAppear {
                                     loadMoreData()
-                                }
-                        }
-                    } else if !filteredIllusts.isEmpty {
+            }
+            .onFilterSettingsChange(from: settingStore, perform: recalculateFilteredIllusts)
+        }                    } else if !filteredIllusts.isEmpty {
                         Text(String(localized: "已经到底了"))
                             .font(.caption)
                             .foregroundColor(.secondary)
@@ -276,6 +279,7 @@ struct RecommendView: View {
             .onChange(of: accountStore.currentUserId) { _, _ in
                 Task {
                     illusts = []
+                    recalculateFilteredIllusts()
                     nextUrl = nil
                     hasMoreData = true
                     recommendedUsers = []
@@ -294,6 +298,7 @@ struct RecommendView: View {
             .onChange(of: contentType) { _, _ in
                 Task {
                     illusts = []
+                    recalculateFilteredIllusts()
                     nextUrl = nil
                     hasMoreData = true
                     await refreshIllusts(forceRefresh: false)
@@ -328,12 +333,21 @@ struct RecommendView: View {
     private func loadCachedData() {
         if let cached: ([Illusts], String?) = cache.get(forKey: cacheKey) {
             illusts = cached.0
+            recalculateFilteredIllusts()
             nextUrl = cached.1
             hasMoreData = cached.1 != nil
             isLoading = false
         } else {
             isLoading = true
         }
+    }
+
+    /// 从预计算的 shouldBlurFlags 中查找对应 illust 的模糊标志
+    private func shouldBlur(for illust: Illusts) -> Bool {
+        guard let index = filteredIllusts.firstIndex(where: { $0.id == illust.id }),
+              index < shouldBlurFlags.count
+        else { return false }
+        return shouldBlurFlags[index]
     }
 
     /// 卡片出现时预取后续图片，保持始终领先视口约 6 张
@@ -395,6 +409,7 @@ struct RecommendView: View {
                         loadMoreData()
                     } else {
                         self.illusts.append(contentsOf: newIllusts)
+                        recalculateFilteredIllusts()
                         self.nextUrl = result.nextUrl
                         self.hasMoreData = result.nextUrl != nil
                         self.isLoading = false
@@ -453,6 +468,7 @@ struct RecommendView: View {
                 await loadMoreDataAsync()
             } else {
                 self.illusts.append(contentsOf: newIllusts)
+                recalculateFilteredIllusts()
                 self.nextUrl = result.nextUrl
                 self.hasMoreData = result.nextUrl != nil
                 self.isLoading = false
@@ -475,6 +491,7 @@ struct RecommendView: View {
                 if let cached: ([Illusts], String?) = cache.get(forKey: cacheKey) {
                     await MainActor.run {
                         illusts = cached.0
+                        recalculateFilteredIllusts()
                         nextUrl = cached.1
                         hasMoreData = cached.1 != nil
                         isLoading = false
@@ -499,6 +516,7 @@ struct RecommendView: View {
 
             await MainActor.run {
                 illusts = result.illusts
+                recalculateFilteredIllusts()
                 nextUrl = result.nextUrl
                 hasMoreData = result.nextUrl != nil
                 isLoading = false
