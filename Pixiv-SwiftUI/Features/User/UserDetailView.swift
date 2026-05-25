@@ -543,50 +543,59 @@ struct IllustWaterfallView: View {
     }
 
     var body: some View {
-        if filteredIllusts.isEmpty && !illusts.isEmpty {
-            VStack(spacing: 12) {
-                Image(systemName: "eye.slash")
-                    .font(.system(size: 48))
-                    .foregroundColor(.secondary)
-                Text(String(localized: "已根据您的设置过滤掉所有插画"))
-                    .font(.headline)
-                    .foregroundColor(.secondary)
-                Text(String(localized: "尝试调整过滤设置以查看更多内容"))
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            .frame(maxWidth: .infinity, minHeight: 200)
-            .padding()
-        } else {
-            VStack(spacing: 12) {
-                WaterfallGrid(data: filteredIllusts, columnCount: dynamicColumnCount, width: width.map { $0 - 24 }, aspectRatio: { $0.safeAspectRatio }) { illust, columnWidth in
-                    NavigationLink(value: illust) {
-                        IllustCard(illust: illust, columnCount: dynamicColumnCount, columnWidth: columnWidth)
-                    }
-                    .buttonStyle(.plain)
-                }
-
-                if !hasReachedEnd {
-                    LazyVStack {
-                        ProgressView()
-                            #if os(macOS)
-                            .controlSize(.small)
-                            #endif
-                            .padding()
-                            .onAppear {
-                                onLoadMore()
-                            }
-                    }
-                } else {
-                    Text(String(localized: "已经到底了"))
+        Group {
+            if filteredIllusts.isEmpty && !illusts.isEmpty {
+                VStack(spacing: 12) {
+                    Image(systemName: "eye.slash")
+                        .font(.system(size: 48))
+                        .foregroundColor(.secondary)
+                    Text(String(localized: "已根据您的设置过滤掉所有插画"))
+                        .font(.headline)
+                        .foregroundColor(.secondary)
+                    Text(String(localized: "尝试调整过滤设置以查看更多内容"))
                         .font(.caption)
                         .foregroundColor(.secondary)
-                        .padding()
                 }
+                .frame(maxWidth: .infinity, minHeight: 200)
+                .padding()
+            } else {
+                VStack(spacing: 12) {
+                    WaterfallGrid(data: filteredIllusts, columnCount: dynamicColumnCount, width: width.map { $0 - 24 }, aspectRatio: { $0.safeAspectRatio }) { illust, columnWidth in
+                        NavigationLink(value: illust) {
+                            IllustCard(illust: illust, columnCount: dynamicColumnCount, columnWidth: columnWidth)
+                        }
+                        .buttonStyle(.plain)
+                    }
+
+                    if !hasReachedEnd {
+                        LazyVStack {
+                            ProgressView()
+                                #if os(macOS)
+                                .controlSize(.small)
+                                #endif
+                                .padding()
+                                .onAppear {
+                                    onLoadMore()
+                                }
+                        }
+                    } else {
+                        Text(String(localized: "已经到底了"))
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .padding()
+                    }
+                }
+                .padding(.horizontal, 12)
+                .responsiveGridColumnCount(userSetting: settingStore.userSetting, columnCount: $dynamicColumnCount)
             }
-            .padding(.horizontal, 12)
-            .responsiveGridColumnCount(userSetting: settingStore.userSetting, columnCount: $dynamicColumnCount)
         }
+        .onAppear {
+            recalculateFilteredIllusts()
+        }
+        .onChange(of: illusts) { _, _ in
+            recalculateFilteredIllusts()
+        }
+        .onFilterSettingsChange(from: settingStore, perform: recalculateFilteredIllusts)
     }
 }
 

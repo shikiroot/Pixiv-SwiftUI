@@ -310,6 +310,9 @@ struct IllustRankingPage: View {
                     await loadRankings()
                 }
             }
+            .onChange(of: illusts) { _, _ in
+                recalculateFilteredIllusts()
+            }
             .onReceive(NotificationCenter.default.publisher(for: .refreshCurrentPage)) { _ in
                 Task {
                     await loadRankings(forceRefresh: true)
