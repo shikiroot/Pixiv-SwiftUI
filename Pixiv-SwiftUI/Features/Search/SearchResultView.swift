@@ -653,11 +653,12 @@ private struct SearchFiltersSheet: View {
 
     private func applyFilters() {
         if isDateRangeEnabled {
-            var normalizedStartDate = Calendar.current.startOfDay(for: draftState.startDate ?? Date())
-            var normalizedEndDate = Calendar.current.startOfDay(for: draftState.endDate ?? normalizedStartDate)
+            var normalizedStartDate = draftState.startDate.map { Calendar.current.startOfDay(for: $0) }
+            var normalizedEndDate = draftState.endDate.map { Calendar.current.startOfDay(for: $0) }
 
-            if normalizedStartDate > normalizedEndDate {
-                swap(&normalizedStartDate, &normalizedEndDate)
+            if let startDate = normalizedStartDate, let endDate = normalizedEndDate, startDate > endDate {
+                normalizedStartDate = endDate
+                normalizedEndDate = startDate
             }
 
             draftState.startDate = normalizedStartDate
