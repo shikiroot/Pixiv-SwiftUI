@@ -415,6 +415,9 @@ final class AccountStore {
         current.webPAbId = normalizeCookieValue(pAbId)
         current.webPAbId2 = normalizeCookieValue(pAbId2)
 
+        // PHPSESSID 是瞬态字段，需要额外写入 Keychain 才能跨重启保留。
+        saveTokensToKeychain(for: current)
+
         do {
             try dataContainer.save()
         } catch {
