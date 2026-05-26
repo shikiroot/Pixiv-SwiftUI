@@ -42,10 +42,7 @@ struct NovelRowView: View {
 
     var body: some View {
         NavigationLink(value: novel) {
-            NovelInfoTableRow(
-                novel: novel,
-                detailStyle: .metrics
-            )
+            NovelListCard(novel: novel)
         }
         .buttonStyle(.plain)
     }

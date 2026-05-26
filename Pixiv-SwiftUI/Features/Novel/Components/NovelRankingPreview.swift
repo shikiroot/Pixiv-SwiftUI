@@ -97,11 +97,7 @@ struct NovelRankingCard: View {
                     .frame(width: Layout.contentWidth, alignment: .leading)
 
                 HStack(spacing: 2) {
-                    Text(formatTextLength(novel.textLength))
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.8)
+                    NovelTextLengthLabel(length: novel.textLength, font: .caption2, iconFont: .caption2)
 
                     Spacer()
 
@@ -118,15 +114,6 @@ struct NovelRankingCard: View {
             }
         }
         .frame(width: Layout.cardWidth)
-    }
-
-    private func formatTextLength(_ length: Int) -> String {
-        if length >= 10000 {
-            return String(format: "%.1f万字", Double(length) / 10000)
-        } else if length >= 1000 {
-            return String(format: "%.1f千字", Double(length) / 1000)
-        }
-        return "\(length)字"
     }
 }
 

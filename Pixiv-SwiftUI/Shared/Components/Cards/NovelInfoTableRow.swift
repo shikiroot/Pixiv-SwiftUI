@@ -33,10 +33,6 @@ struct NovelInfoTableRow: View {
         return novel.title
     }
 
-    private var metricsSummary: String {
-        "\(formatTextLength(novel.textLength)) / \(NumberFormatter.formatCount(novel.totalBookmarks))收藏 / \(NumberFormatter.formatCount(novel.totalView))阅读"
-    }
-
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             CachedAsyncImage(
@@ -83,12 +79,15 @@ struct NovelInfoTableRow: View {
                 .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
         case .metrics:
-            Text(metricsSummary)
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.8)
-                .frame(maxWidth: .infinity, alignment: .leading)
+            HStack(spacing: 4) {
+                NovelTextLengthLabel(length: novel.textLength, font: .caption, iconFont: .caption2)
+                Text("/ \(NumberFormatter.formatCount(novel.totalBookmarks))收藏 / \(NumberFormatter.formatCount(novel.totalView))阅读")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 
@@ -131,14 +130,5 @@ struct NovelInfoTableRow: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
         }
-    }
-
-    private func formatTextLength(_ length: Int) -> String {
-        if length >= 10000 {
-            return String(format: "%.1f万字", Double(length) / 10000)
-        } else if length >= 1000 {
-            return String(format: "%.1f千字", Double(length) / 1000)
-        }
-        return "\(length)字"
     }
 }

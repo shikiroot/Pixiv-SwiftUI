@@ -35,10 +35,7 @@ struct NovelSeriesCard: View {
                     .foregroundColor(.secondary)
 
                 HStack(spacing: 12) {
-                    Text(formatTextLength(novel.textLength))
-                        .font(.caption)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.8)
+                    NovelTextLengthLabel(length: novel.textLength, font: .caption, iconFont: .caption2)
 
                     HStack(spacing: 4) {
                         Image(systemName: isBookmarked ? "heart.fill" : "heart")
@@ -152,15 +149,6 @@ struct NovelSeriesCard: View {
                 }
             }
         }
-    }
-
-    private func formatTextLength(_ length: Int) -> String {
-        if length >= 10000 {
-            return String(format: "%.1f万字", Double(length) / 10000)
-        } else if length >= 1000 {
-            return String(format: "%.1f千字", Double(length) / 1000)
-        }
-        return "\(length)字"
     }
 
     private func toggleBookmark(isPrivate: Bool = false, forceUnbookmark: Bool = false) {

@@ -196,7 +196,7 @@ struct NovelSeriesView: View {
                 Label("\(detail.contentCount)章", systemImage: "doc.text.fill")
                     .font(.caption)
 
-                Label("\(formatCharacterCount(detail.totalCharacterCount))", systemImage: "character.book.closed")
+                Label("\(formatCharacterCount(detail.totalCharacterCount))", systemImage: "text.alignleft")
                     .font(.caption)
             }
             .foregroundColor(.secondary)
@@ -277,12 +277,7 @@ struct NovelSeriesView: View {
     }
 
     private func formatCharacterCount(_ count: Int) -> String {
-        if count >= 10000 {
-            return String(format: "%.1f万字", Double(count) / 10000)
-        } else if count >= 1000 {
-            return String(format: "%.1f千字", Double(count) / 1000)
-        }
-        return "\(count)字"
+        NumberFormatter.formatNovelTextLength(count)
     }
 
     private func exportSeries(format: NovelExportFormat) {
