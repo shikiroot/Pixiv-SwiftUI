@@ -415,6 +415,9 @@ final class AccountStore {
         current.webPAbId = normalizeCookieValue(pAbId)
         current.webPAbId2 = normalizeCookieValue(pAbId2)
 
+        // Ajax 会话是运行时更新的，需要同步写回 Keychain 才能跨重启恢复。
+        saveTokensToKeychain(for: current)
+
         do {
             try dataContainer.save()
         } catch {
