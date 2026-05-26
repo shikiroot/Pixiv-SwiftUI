@@ -10,6 +10,7 @@ struct BookmarksPage: View {
     @State private var contentType: TypeFilterButton.ContentType = .all
     @State private var selectedRestrict: TypeFilterButton.RestrictType? = .publicAccess
     @State private var cacheFilter: BookmarkCacheFilter = .all
+    @State private var refreshResetToken = 0
     @Environment(UserSettingStore.self) var settingStore
     var accountStore: AccountStore = AccountStore.shared
     @State private var bookmarkCacheStore = BookmarkCacheStore.shared
@@ -106,7 +107,7 @@ struct BookmarksPage: View {
             let waterfallWidth = availableWidth > 0 ? availableWidth : nil
 
             ZStack(alignment: .top) {
-ScrollView {
+                ScrollView {
                         VStack(spacing: 12) {
                             if store.isLoadingBookmarks && store.bookmarks.isEmpty {
                             SkeletonIllustWaterfallGrid(
@@ -196,8 +197,10 @@ ScrollView {
                     }
                     lastScrollOffset = value
                 }
+                .id(refreshResetToken)
                 .refreshable {
                     await store.refreshBookmarks(userId: accountStore.currentAccount?.userId ?? "")
+                    refreshResetToken &+= 1
                 }
             }
             .navigationTitle(initialRestrict == nil ? String(localized: "收藏") : (initialRestrict == "public" ? String(localized: "公开收藏") : String(localized: "非公开收藏")))

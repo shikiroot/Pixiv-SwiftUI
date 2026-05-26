@@ -3,6 +3,7 @@ import SwiftUI
 struct FollowingListView: View {
     @State var store: FollowingListStore
     @State private var isRefreshing: Bool = false
+    @State private var refreshResetToken = 0
     let userId: String
 
     @State private var columnCount: Int = 1
@@ -48,10 +49,12 @@ struct FollowingListView: View {
                 .padding()
             }
         }
+        .id(refreshResetToken)
         .refreshable {
             isRefreshing = true
             await store.refreshFollowing(userId: userId, restrict: restrictString)
             isRefreshing = false
+            refreshResetToken &+= 1
         }
         .responsiveUserGridColumnCount(columnCount: $columnCount)
         .onReceive(NotificationCenter.default.publisher(for: .refreshCurrentPage)) { _ in

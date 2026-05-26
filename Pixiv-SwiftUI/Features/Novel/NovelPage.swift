@@ -5,6 +5,7 @@ struct NovelPage: View {
     @State private var path = NavigationPath()
     @State private var showProfilePanel = false
     @State private var showAuthView = false
+    @State private var refreshResetToken = 0
     var accountStore: AccountStore = AccountStore.shared
 
     private var isLoggedIn: Bool {
@@ -46,6 +47,7 @@ struct NovelPage: View {
                         }
                         .padding(.vertical, 8)
                     }
+                    .id(refreshResetToken)
                     .navigationTitle("小说")
                     .pixivNavigationDestinations()
                     .navigationDestination(for: NovelListType.self) { listType in
@@ -53,6 +55,7 @@ struct NovelPage: View {
                     }
                     .refreshable {
                         await store.loadAll(userId: accountStore.currentAccount?.userId ?? "", forceRefresh: true)
+                        refreshResetToken &+= 1
                     }
                     .task {
                         await store.loadAll(userId: accountStore.currentAccount?.userId ?? "", forceRefresh: false)

@@ -15,6 +15,7 @@ struct RecommendView: View {
     @State private var isInitialLoadInProgress = false
 
     @State private var contentType: TypeFilterButton.ContentType = .illust
+    @State private var refreshResetToken = 0
 
     @Environment(UserSettingStore.self) var settingStore
     @State private var path = NavigationPath()
@@ -158,8 +159,10 @@ struct RecommendView: View {
                 }
             }
         }
+        .id(refreshResetToken)
         .refreshable {
             await refreshAll()
+            refreshResetToken &+= 1
         }
     }
 

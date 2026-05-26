@@ -3,6 +3,7 @@ import SwiftUI
 struct NovelRankingPage: View {
     @State private var store = NovelStore()
     @State private var selectedMode: NovelRankingMode = .day
+    @State private var refreshResetToken = 0
 
     var body: some View {
         ScrollView {
@@ -19,6 +20,7 @@ struct NovelRankingPage: View {
                 NovelRankingList(store: store, mode: selectedMode)
             }
         }
+        .id(refreshResetToken)
         .navigationTitle(String(localized: "小说排行"))
         #if os(iOS)
         .navigationBarTitleDisplayMode(.large)
@@ -28,6 +30,7 @@ struct NovelRankingPage: View {
         }
         .refreshable {
             await store.loadAllRankings(forceRefresh: true)
+            refreshResetToken &+= 1
         }
         .toolbar {
             #if os(macOS)

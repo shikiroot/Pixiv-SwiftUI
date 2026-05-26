@@ -14,6 +14,7 @@ struct NovelSeriesView: View {
     @State private var showingExportAlert = false
     @State private var isLoadingForExport = false
     @State private var selectedExportFormat: NovelExportFormat = .txt
+    @State private var refreshResetToken = 0
 
     init(seriesId: Int) {
         self.seriesId = seriesId
@@ -36,6 +37,7 @@ struct NovelSeriesView: View {
                 }
             }
         }
+        .id(refreshResetToken)
         .navigationTitle(store.seriesDetail?.title ?? String(localized: "系列详情"))
         .id("SeriesScrollView-\(seriesId)")  // 添加稳定的 ID
         .onAppear {
@@ -43,6 +45,7 @@ struct NovelSeriesView: View {
         }
         .refreshable {
             await store.fetch()
+            refreshResetToken &+= 1
         }
         .onReceive(NotificationCenter.default.publisher(for: .refreshCurrentPage)) { _ in
             Task {

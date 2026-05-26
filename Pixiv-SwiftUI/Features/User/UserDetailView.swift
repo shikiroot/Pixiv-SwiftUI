@@ -11,6 +11,7 @@ struct UserDetailView: View {
     @State private var isFollowLoading = false
     @State private var isFollowed: Bool = false
     @State private var isBlockTriggered: Bool = false
+    @State private var refreshResetToken = 0
     @Environment(\.dismiss) private var dismiss
 
     private var skeletonItemCount: Int {
@@ -229,8 +230,10 @@ struct UserDetailView: View {
                 #endif
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             }
+            .id(refreshResetToken)
             .refreshable {
                 await store.refresh()
+                refreshResetToken &+= 1
             }
             .ignoresSafeArea(edges: .top)
             .onReceive(NotificationCenter.default.publisher(for: .refreshCurrentPage)) { _ in

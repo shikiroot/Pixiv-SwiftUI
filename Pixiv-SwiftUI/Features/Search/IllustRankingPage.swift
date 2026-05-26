@@ -10,6 +10,7 @@ struct IllustRankingPage: View {
     @State private var isLoading = false
     @State private var error: String?
     @State private var showProfilePanel = false
+    @State private var refreshResetToken = 0
     @Environment(UserSettingStore.self) var settingStore
     @Environment(AccountStore.self) var accountStore
 
@@ -246,6 +247,7 @@ struct IllustRankingPage: View {
                     }
                 }
             }
+            .id(refreshResetToken)
             .navigationTitle(String(localized: "插画排行"))
             #if os(iOS)
             .navigationBarTitleDisplayMode(.large)
@@ -255,6 +257,7 @@ struct IllustRankingPage: View {
             }
             .refreshable {
                 await loadRankings(forceRefresh: true)
+                refreshResetToken &+= 1
             }
             .toolbar {
                 #if os(iOS)

@@ -5,6 +5,7 @@ struct IllustSeriesView: View {
     let seriesId: Int
     @State private var store: IllustSeriesStore
     @State private var dynamicColumnCount: Int = ResponsiveGrid.initialColumnCount(userSetting: UserSettingStore.shared.userSetting)
+    @State private var refreshResetToken = 0
     @Environment(UserSettingStore.self) var settingStore
 
     init(seriesId: Int) {
@@ -24,6 +25,7 @@ struct IllustSeriesView: View {
                 }
             }
         }
+        .id(refreshResetToken)
         .navigationTitle(store.seriesDetail?.title ?? String(localized: "系列详情"))
         .onAppear {
             Task {
@@ -32,6 +34,7 @@ struct IllustSeriesView: View {
         }
         .refreshable {
             await store.fetch()
+            refreshResetToken &+= 1
         }
     }
 

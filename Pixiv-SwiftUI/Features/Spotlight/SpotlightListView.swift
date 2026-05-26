@@ -7,6 +7,7 @@ struct SpotlightListTarget: Hashable, Identifiable {
 struct SpotlightListView: View {
     @State private var store = SpotlightStore()
     @State private var navigateToDetail: SpotlightArticle?
+    @State private var refreshResetToken = 0
 
     @State private var searchText: String = ""
     @State private var isSearchEditing: Bool = false
@@ -51,6 +52,7 @@ struct SpotlightListView: View {
                 }
             }
         }
+        .id(refreshResetToken)
         .navigationTitle(store.source.isSearch ? "" : String(localized: "亮点"))
         #if os(iOS)
         .navigationBarTitleDisplayMode(store.source.isSearch ? .inline : .automatic)
@@ -84,6 +86,7 @@ struct SpotlightListView: View {
         }
         .refreshable {
             await store.fetch(forceRefresh: true)
+            refreshResetToken &+= 1
         }
         .navigationDestination(item: $navigateToDetail) { article in
             SpotlightDetailView(article: article)

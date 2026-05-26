@@ -7,6 +7,7 @@ struct UpdatesPage: View {
     @State private var showAuthView = false
     @State private var contentType: TypeFilterButton.ContentType = .all
     @State private var selectedRestrict: TypeFilterButton.RestrictType? = .publicAccess
+    @State private var refreshResetToken = 0
     @Environment(UserSettingStore.self) var settingStore
     var accountStore: AccountStore = AccountStore.shared
 
@@ -112,10 +113,12 @@ struct UpdatesPage: View {
                                 }
                             }
                         }
+                        .id(refreshResetToken)
                         .refreshable {
                             let userId = accountStore.currentAccount?.userId ?? ""
                             await store.refreshFollowing(userId: userId)
                             await store.refreshUpdates(restrict: restrictString)
+                            refreshResetToken &+= 1
                         }
                         .navigationTitle("动态")
                         .pixivNavigationDestinations()

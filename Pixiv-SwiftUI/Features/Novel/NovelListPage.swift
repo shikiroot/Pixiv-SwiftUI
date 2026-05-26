@@ -8,6 +8,7 @@ struct NovelListPage: View {
     @State private var novels: [Novel] = []
     @State private var nextUrl: String?
     @State private var isLoading = false
+    @State private var refreshResetToken = 0
     var accountStore: AccountStore = AccountStore.shared
     @Environment(UserSettingStore.self) private var settingStore
 
@@ -96,8 +97,10 @@ struct NovelListPage: View {
                 }
             }
         }
+        .id(refreshResetToken)
         .refreshable {
             await refresh(forceRefresh: true)
+            refreshResetToken &+= 1
         }
         .navigationTitle(listType.title)
         .toolbar {
