@@ -17,7 +17,7 @@ struct MainTabView: View {
 @available(iOS 26.0, macOS 26.0, *)
 private struct MainTabViewNew: View {
     @State private var selectedTab: NavigationItem = .recommend
-    @Bindable var accountStore: AccountStore
+    let accountStore: AccountStore
     @Environment(UserSettingStore.self) var userSettingStore
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
@@ -91,7 +91,7 @@ private struct MainTabViewNew: View {
 @available(iOS 16.0, *)
 private struct MainTabViewLegacy: View {
     @State private var selectedTab: NavigationItem = .recommend
-    @Bindable var accountStore: AccountStore
+    let accountStore: AccountStore
     @Environment(UserSettingStore.self) var userSettingStore
 
     private var isPad: Bool {
