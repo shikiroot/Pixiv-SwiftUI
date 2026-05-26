@@ -189,7 +189,7 @@ struct SearchView: View {
 
         isSearchPresented = false
         store.addHistory(SearchTag(name: normalizedWord, translatedName: translatedName))
-        store.searchText = normalizedWord
+        store.searchText = ""
         selectedTag = normalizedWord
 
         let preloadToken = UUID()
