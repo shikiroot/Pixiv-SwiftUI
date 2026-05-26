@@ -132,7 +132,6 @@ struct WebDAVSyncSafeSettingsPayload: Codable, Sendable {
     let translateNovelMaxConcurrentBatches: Int
     let tagTranslationDisplayMode: Int
     let defaultTab: String
-    let checkUpdateOnLaunch: Bool
 
     init(setting: UserSetting) {
         self.pictureQuality = setting.pictureQuality
@@ -176,7 +175,6 @@ struct WebDAVSyncSafeSettingsPayload: Codable, Sendable {
         self.translateNovelMaxConcurrentBatches = setting.translateNovelMaxConcurrentBatches
         self.tagTranslationDisplayMode = setting.tagTranslationDisplayMode
         self.defaultTab = setting.defaultTab
-        self.checkUpdateOnLaunch = setting.checkUpdateOnLaunch
     }
 }
 

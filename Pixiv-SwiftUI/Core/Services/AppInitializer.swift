@@ -47,25 +47,5 @@ final class AppInitializer {
         withAnimation(.easeInOut(duration: 0.2)) {
             self.isLaunching = false
         }
-
-        // 7. 检查更新（后台执行）
-        checkForUpdateOnLaunch()
-    }
-
-    private func checkForUpdateOnLaunch() {
-        guard userSettingStore?.userSetting.checkUpdateOnLaunch == true else { return }
-
-        Task {
-            if let updateInfo = await UpdateChecker.shared.checkForUpdate() {
-                await MainActor.run {
-                    if updateInfo.isNewerThanCurrent {
-                        NotificationCenter.default.post(
-                            name: .init("ShowUpdateNotification"),
-                            object: updateInfo
-                        )
-                    }
-                }
-            }
-        }
     }
 }

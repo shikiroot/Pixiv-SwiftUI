@@ -1,29 +1,12 @@
 import SwiftData
 import SwiftUI
-#if os(macOS)
-import AppKit
-#endif
-
-#if os(macOS)
-class AppDelegate: NSObject, NSApplicationDelegate {
-    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        return UserDefaults.standard.bool(forKey: "quit_after_window_closed")
-    }
-}
-#endif
 
 @main
 struct PixivApp: App {
-    #if os(macOS)
-    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    #endif
-
     @State private var initializer = AppInitializer.shared
-    @State private var pendingUpdateInfo: AppUpdateInfo?
-    @State private var showUpdateSheet = false
 
     var body: some Scene {
-        WindowGroup(id: "main") {
+        WindowGroup {
             ZStack {
                 ContentView()
                     .environment(initializer.accountStore ?? AccountStore.shared)
@@ -38,73 +21,10 @@ struct PixivApp: App {
                 }
             }
             .animation(.easeInOut(duration: 0.2), value: initializer.isLaunching)
-            .sheet(isPresented: $showUpdateSheet) {
-                if let info = pendingUpdateInfo {
-                    UpdateAvailableSheet(updateInfo: info, isPresented: $showUpdateSheet)
-                }
-            }
-            .onReceive(NotificationCenter.default.publisher(for: .init("ShowUpdateNotification"))) { notification in
-                if let info = notification.object as? AppUpdateInfo {
-                    pendingUpdateInfo = info
-                    showUpdateSheet = true
-                }
-            }
             .task {
                 await initializer.performInitialization()
             }
-            #if os(macOS)
-            .frame(minWidth: 1000, minHeight: 700)
-            #endif
         }
-        .commands {
-            if let accountStore = initializer.accountStore {
-                AppCommands(accountStore: accountStore)
-            }
-        }
-        #if os(macOS)
-        .windowStyle(.titleBar)
-        .windowToolbarStyle(.unified)
-        #endif
-
-        #if os(macOS)
-        WindowGroup(id: "illust-detail", for: Int.self) { $id in
-            if let id = id {
-                IllustWindowRootView(illustID: id)
-                    .environment(AccountStore.shared)
-                    .environment(IllustStore.shared)
-                    .environment(UserSettingStore.shared)
-                    .environment(ThemeManager.shared)
-                    .modelContainer(DataContainer.shared.modelContainer)
-            }
-        }
-        .windowStyle(.titleBar)
-        .windowToolbarStyle(.unified)
-
-        WindowGroup(id: "novel-detail", for: Int.self) { $id in
-            if let id = id {
-                NovelWindowRootView(novelID: id)
-                    .environment(AccountStore.shared)
-                    .environment(IllustStore.shared)
-                    .environment(UserSettingStore.shared)
-                    .environment(ThemeManager.shared)
-                    .modelContainer(DataContainer.shared.modelContainer)
-            }
-        }
-        .windowStyle(.titleBar)
-        .windowToolbarStyle(.unified)
-
-        WindowGroup(id: "settings") {
-            SettingsContainerView()
-                .environment(AccountStore.shared)
-                .environment(UserSettingStore.shared)
-                .environment(ThemeManager.shared)
-                .modelContainer(DataContainer.shared.modelContainer)
-                .frame(minWidth: 600, minHeight: 500)
-        }
-        .defaultSize(width: 600, height: 500)
-        .windowStyle(.titleBar)
-        .windowToolbarStyle(.unified)
-        #endif
     }
 }
 
@@ -124,11 +44,7 @@ struct ContentView: View {
                 })
             } else {
                 Group {
-                    #if os(macOS)
-                    MainSplitView(accountStore: accountStore)
-                    #else
                     MainTabView(accountStore: accountStore)
-                    #endif
                 }
                 .preferredColorScheme(
                     userSettingStore.userSetting.colorSchemeMode == 1 ? .light :

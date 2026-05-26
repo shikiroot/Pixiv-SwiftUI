@@ -6,7 +6,7 @@ struct MainTabView: View {
     @Bindable var accountStore: AccountStore
 
     var body: some View {
-        if #available(iOS 26.0, macOS 26.0, *) {
+        if #available(iOS 26.0, *) {
             MainTabViewNew(accountStore: accountStore)
         } else {
             MainTabViewLegacy(accountStore: accountStore)
@@ -14,31 +14,18 @@ struct MainTabView: View {
     }
 }
 
-@available(iOS 26.0, macOS 26.0, *)
+@available(iOS 26.0, *)
 private struct MainTabViewNew: View {
     @State private var selectedTab: NavigationItem = .recommend
     @Bindable var accountStore: AccountStore
     @Environment(UserSettingStore.self) var userSettingStore
-    @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     init(accountStore: AccountStore) {
         self.accountStore = accountStore
     }
 
-    private var isPad: Bool {
-        #if os(iOS)
-        return UIDevice.current.userInterfaceIdiom == .pad
-        #else
-        return false
-        #endif
-    }
-
-    private var isPadLandscape: Bool {
-        isPad && verticalSizeClass == .compact
-    }
-
     private var mainItems: [NavigationItem] {
-        isPad ? NavigationItem.mainItems : NavigationItem.mainItemsForPhone
+        NavigationItem.mainItemsForPhone
     }
 
     var body: some View {
@@ -55,31 +42,8 @@ private struct MainTabViewNew: View {
                 }
             }
 
-            if isPadLandscape {
-                TabSection {
-                    ForEach(NavigationItem.secondaryItems) { item in
-                        Tab(item.title, systemImage: item.icon, value: item) {
-                            item.destination
-                        }
-                        .defaultVisibility(.hidden, for: .tabBar)
-                    }
-                } header: {
-                    Label("库", systemImage: "folder")
-                }
-            }
-
-            if isPad && !isPadLandscape {
-                ForEach(NavigationItem.secondaryItems) { item in
-                    Tab(item.title, systemImage: item.icon, value: item) {
-                        item.destination
-                    }
-                }
-            }
         }
-        .tabViewStyle(.sidebarAdaptable)
-        #if os(iOS)
         .tabBarMinimizeBehavior(.onScrollDown)
-        #endif
         .onAppear {
             let validTabs = Set(mainItems)
             let savedTab = NavigationItem(rawValue: userSettingStore.userSetting.defaultTab) ?? .recommend
@@ -94,16 +58,8 @@ private struct MainTabViewLegacy: View {
     @Bindable var accountStore: AccountStore
     @Environment(UserSettingStore.self) var userSettingStore
 
-    private var isPad: Bool {
-        #if os(iOS)
-        return UIDevice.current.userInterfaceIdiom == .pad
-        #else
-        return false
-        #endif
-    }
-
     private var mainItems: [NavigationItem] {
-        isPad ? NavigationItem.mainItemsForLegacy : NavigationItem.mainItemsForLegacyPhone
+        NavigationItem.mainItemsForLegacyPhone
     }
 
     init(accountStore: AccountStore) {

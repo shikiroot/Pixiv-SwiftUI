@@ -1,19 +1,8 @@
 import SwiftUI
-#if canImport(UIKit)
-import UIKit
-#elseif canImport(AppKit)
-import AppKit
-#endif
 
 struct AboutSettingsView: View {
     @Environment(UserSettingStore.self) var userSettingStore
     @State private var showingResetAlert = false
-
-    @State private var isCheckingUpdate = false
-    @State private var updateInfo: AppUpdateInfo?
-    @State private var showingUpdateAlert = false
-    @State private var showingNoUpdateAlert = false
-    @State private var checkError: String?
 
     var body: some View {
         VStack {
@@ -29,8 +18,6 @@ struct AboutSettingsView: View {
 
             Form {
                 appInfoSection
-                updateSection
-                autoCheckSection
                 linksSection
             }
             .formStyle(.grouped)
@@ -50,28 +37,6 @@ struct AboutSettingsView: View {
             resetButton
         }
         #endif
-        .alert("发现新版本", isPresented: $showingUpdateAlert) {
-            Button("取消", role: .cancel) { }
-            Button("查看") {
-                if let urlString = updateInfo?.releaseUrl,
-                   let url = URL(string: urlString) {
-                    #if os(macOS)
-                    NSWorkspace.shared.open(url)
-                    #else
-                    UIApplication.shared.open(url)
-                    #endif
-                }
-            }
-        } message: {
-            if let info = updateInfo {
-                Text("版本 \(info.version)\n\n\(info.releaseNotes)")
-            }
-        }
-        .alert("已是最新版本", isPresented: $showingNoUpdateAlert) {
-            Button("确定", role: .cancel) { }
-        } message: {
-            Text("当前已是最新版本")
-        }
     }
 
     private var iconSize: CGFloat {
@@ -129,39 +94,6 @@ struct AboutSettingsView: View {
         }
     }
 
-    private var updateSection: some View {
-        Section {
-            Button {
-                checkForUpdate()
-            } label: {
-                HStack {
-                    Text("检查更新")
-                    Spacer()
-                    if isCheckingUpdate {
-                        ProgressView()
-                            .scaleEffect(0.8)
-                    }
-                }
-            }
-            .buttonStyle(.plain)
-            .tint(nil)
-            .disabled(isCheckingUpdate)
-        }
-    }
-
-    private var autoCheckSection: some View {
-        Section {
-            Toggle("启动时检查更新", isOn: Binding(
-                get: { userSettingStore.userSetting.checkUpdateOnLaunch },
-                set: { newValue in
-                    try? userSettingStore.setCheckUpdateOnLaunch(newValue)
-                }
-            ))
-        } header: {
-            Text("自动更新")
-        }
-    }
-
     private var linksSection: some View {
         Section("链接") {
             // swiftlint:disable:next force_unwrapping
@@ -181,29 +113,6 @@ struct AboutSettingsView: View {
                     Spacer()
                     Image(systemName: "arrow.up.right.square")
                         .foregroundColor(.secondary)
-                }
-            }
-        }
-    }
-
-    private func checkForUpdate() {
-        isCheckingUpdate = true
-        checkError = nil
-
-        Task {
-            let result = await UpdateChecker.shared.checkForUpdate()
-            await MainActor.run {
-                isCheckingUpdate = false
-
-                if let info = result {
-                    updateInfo = info
-                    if info.isNewerThanCurrent {
-                        showingUpdateAlert = true
-                    } else {
-                        showingNoUpdateAlert = true
-                    }
-                } else {
-                    checkError = "检查更新失败"
                 }
             }
         }

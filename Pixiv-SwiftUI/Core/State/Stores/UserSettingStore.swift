@@ -1214,11 +1214,6 @@ final class UserSettingStore {
         try saveSetting()
     }
 
-    func setCheckUpdateOnLaunch(_ enabled: Bool) throws {
-        userSetting.checkUpdateOnLaunch = enabled
-        try saveSetting()
-    }
-
     var availableTranslateServices: [(id: String, name: String, requiresSecret: Bool)] {
         [
             ("google", "Google 网页翻译", false),

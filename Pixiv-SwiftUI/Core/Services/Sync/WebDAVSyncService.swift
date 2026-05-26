@@ -223,7 +223,6 @@ final class WebDAVSyncService {
         setting.translateNovelMaxConcurrentBatches = payload.translateNovelMaxConcurrentBatches
         setting.tagTranslationDisplayMode = payload.tagTranslationDisplayMode
         setting.defaultTab = payload.defaultTab
-        setting.checkUpdateOnLaunch = payload.checkUpdateOnLaunch
 
         try userSettingStore.saveSetting()
         ThemeManager.shared.applyThemeMode()

@@ -51,11 +51,7 @@ struct SearchView: View {
     var accountStore: AccountStore = AccountStore.shared
 
     private var columnCount: Int {
-        #if canImport(UIKit)
-        UIDevice.current.userInterfaceIdiom == .pad ? userSettingStore.userSetting.hCrossCount : userSettingStore.userSetting.crossCount
-        #else
-        userSettingStore.userSetting.hCrossCount
-        #endif
+        userSettingStore.userSetting.crossCount
     }
 
     private var trendTagColumns: [[TrendTag]] {

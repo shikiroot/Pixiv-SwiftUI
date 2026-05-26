@@ -7,84 +7,23 @@ enum ResponsiveGrid {
         userSetting: UserSetting? = nil
     ) -> Int {
         if let setting = userSetting {
-            #if os(macOS)
-            if !setting.hCrossAdapt {
-                return setting.hCrossCount
-            }
-            #elseif canImport(UIKit)
-            let isPad = UIDevice.current.userInterfaceIdiom == .pad
-            if isPad && !setting.hCrossAdapt {
-                return setting.hCrossCount
-            } else if !isPad && !setting.crossAdapt {
+            if !setting.crossAdapt {
                 return setting.crossCount
             }
-            #endif
         }
 
-        #if os(macOS)
-        switch containerWidth {
-        case 0..<600:
-            return 2
-        case 600..<900:
-            return 3
-        case 900..<1200:
-            return 4
-        case 1200..<1600:
-            return 5
-        default:
-            return 6
-        }
-        #elseif canImport(UIKit)
-        return UIDevice.current.userInterfaceIdiom == .pad
-            ? (containerWidth >= 1024 ? 5 : 4)
-            : (containerWidth >= 414 ? 3 : 2)
-        #endif
+        return containerWidth >= 414 ? 3 : 2
     }
 
     static func initialColumnCount(userSetting: UserSetting) -> Int {
-        #if os(macOS)
-        if !userSetting.hCrossAdapt {
-            return userSetting.hCrossCount
+        if !userSetting.crossAdapt {
+            return userSetting.crossCount
         }
-        return 4
-        #elseif canImport(UIKit)
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            if !userSetting.hCrossAdapt {
-                return userSetting.hCrossCount
-            }
-            return 4
-        } else {
-            if !userSetting.crossAdapt {
-                return userSetting.crossCount
-            }
-            return 2
-        }
-        #else
         return 2
-        #endif
     }
 
     static func userColumnCount(for containerWidth: CGFloat) -> Int {
-        #if os(macOS)
-        switch containerWidth {
-        case 0..<600:
-            return 1
-        case 600..<950:
-            return 2
-        case 950..<1400:
-            return 3
-        default:
-            return 4
-        }
-        #elseif canImport(UIKit)
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            return containerWidth >= 1024 ? 3 : 2
-        } else {
-            return containerWidth >= 600 ? 2 : 1
-        }
-        #else
-        return 1
-        #endif
+        containerWidth >= 600 ? 2 : 1
     }
 }
 

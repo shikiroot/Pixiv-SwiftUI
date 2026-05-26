@@ -292,9 +292,6 @@ final class UserSetting: Codable {
     /// 默认启动标签页
     var defaultTab: String = "recommend"
 
-    /// 启动时检查更新
-    var checkUpdateOnLaunch: Bool = true
-
     init(ownerId: String = "guest") {
         self.ownerId = ownerId
     }
@@ -394,7 +391,6 @@ final class UserSetting: Codable {
         case bookmarkCacheAllPages
         case bookmarkCacheUgoira
         case defaultTab
-        case checkUpdateOnLaunch
     }
 
     required init(from decoder: Decoder) throws {
@@ -516,7 +512,6 @@ final class UserSetting: Codable {
         self.bookmarkCacheAllPages = try container.decodeIfPresent(Bool.self, forKey: .bookmarkCacheAllPages) ?? false
         self.bookmarkCacheUgoira = try container.decodeIfPresent(Bool.self, forKey: .bookmarkCacheUgoira) ?? false
         self.defaultTab = try container.decodeIfPresent(String.self, forKey: .defaultTab) ?? "recommend"
-        self.checkUpdateOnLaunch = try container.decodeIfPresent(Bool.self, forKey: .checkUpdateOnLaunch) ?? true
     }
 
     func encode(to encoder: Encoder) throws {
@@ -615,7 +610,6 @@ final class UserSetting: Codable {
         try container.encode(bookmarkCacheAllPages, forKey: .bookmarkCacheAllPages)
         try container.encode(bookmarkCacheUgoira, forKey: .bookmarkCacheUgoira)
         try container.encode(defaultTab, forKey: .defaultTab)
-        try container.encode(checkUpdateOnLaunch, forKey: .checkUpdateOnLaunch)
     }
 }
 

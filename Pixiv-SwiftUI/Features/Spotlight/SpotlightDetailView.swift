@@ -10,11 +10,7 @@ struct SpotlightDetailView: View {
     @Environment(UserSettingStore.self) var userSettingStore
     @Environment(AccountStore.self) var accountStore
 
-    #if os(macOS)
-    @State private var columnCount: Int = 4
-    #elseif os(iOS)
-    @State private var columnCount: Int = UIDevice.current.userInterfaceIdiom == .pad ? 3 : 2
-    #endif
+    @State private var columnCount: Int = 2
 
     var body: some View {
         ScrollView {
