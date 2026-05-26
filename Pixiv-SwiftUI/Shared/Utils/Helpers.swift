@@ -376,11 +376,34 @@ struct NumberFormatter {
         }
     }
 
+    static func formatNovelTextLength(_ length: Int) -> String {
+        String(format: "%.1fK", Double(length) / 1_000)
+    }
+
     static func formatFileSize(_ bytes: Int64) -> String {
         let formatter = ByteCountFormatter()
         formatter.allowedUnits = [.useAll]
         formatter.countStyle = .file
         return formatter.string(fromByteCount: bytes)
+    }
+}
+
+struct NovelTextLengthLabel: View {
+    let length: Int
+    var font: Font = .caption
+    var iconFont: Font = .caption2
+    var foregroundColor: Color = .secondary
+
+    var body: some View {
+        HStack(spacing: 4) {
+            Image(systemName: "text.alignleft")
+                .font(iconFont)
+            Text(NumberFormatter.formatNovelTextLength(length))
+                .font(font)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+        }
+        .foregroundColor(foregroundColor)
     }
 }
 

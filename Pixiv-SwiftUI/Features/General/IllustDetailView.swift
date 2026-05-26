@@ -239,7 +239,7 @@ struct IllustDetailView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 #else
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 0) {
+                    VStack(alignment: .leading, spacing: 16) {
                         IllustDetailImageSection(
                             illust: illust,
                             userSettingStore: userSettingStore,
@@ -247,7 +247,10 @@ struct IllustDetailView: View {
                             animation: animation,
                             currentPage: $currentPage
                         )
-                        .frame(maxWidth: proxy.size.width)
+                        .frame(maxWidth: .infinity)
+                        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                        .padding(.top, 8)
+                        .padding(.horizontal, 12)
 
                         IllustDetailInfoSection(
                             illust: illust,
@@ -265,7 +268,7 @@ struct IllustDetailView: View {
                             navigateToUserId: $navigateToUserId
                         )
                         .padding()
-                        .frame(maxWidth: proxy.size.width)
+                        .frame(maxWidth: .infinity)
 
                         IllustDetailRelatedSection(
                             illustId: illust.id,
@@ -276,14 +279,17 @@ struct IllustDetailView: View {
                             relatedNextUrl: $relatedNextUrl,
                             hasMoreRelated: $hasMoreRelated,
                             relatedIllustError: $relatedIllustError,
-                            width: proxy.size.width
+                            width: max(proxy.size.width - 24, 0)
                         )
-                        .padding(.trailing, 16)
+                        .padding(.horizontal, 12)
                     }
+                    .padding(.bottom, 16)
                 }
                 #endif
             }
+            #if os(macOS)
             .ignoresSafeArea(edges: .top)
+            #endif
             #if canImport(UIKit)
             .navigationBarTitleDisplayMode(.inline)
             #endif
@@ -414,7 +420,7 @@ struct IllustDetailView: View {
             .navigationTitle(illust.title)
             #endif
             #if os(iOS)
-            .toolbarBackground(.hidden, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .toolbar(isFullscreen ? .hidden : .visible, for: .navigationBar)
             .toolbar(isFullscreen ? .hidden : .visible, for: .tabBar)
             #endif

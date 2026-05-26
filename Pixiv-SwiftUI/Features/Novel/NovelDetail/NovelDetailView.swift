@@ -152,7 +152,10 @@ struct NovelDetailView: View {
                             showBlockTagToast: $showBlockTagToast,
                             showCopyToast: $showCopyToast,
                             navigateToUserId: $navigateToUserId,
-                            isCommentsPanelPresented: .constant(false)
+                            isCommentsPanelPresented: .constant(false),
+                            onStartReading: {
+                                navigateToReaderId = novelData.id
+                            }
                         )
                         .padding()
 
@@ -177,16 +180,6 @@ struct NovelDetailView: View {
             #else
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    NovelDetailCoverSection(
-                        novel: novelData,
-                        onStartReading: {
-                            navigateToReaderId = novelData.id
-                        }
-                    )
-                        .frame(maxWidth: .infinity)
-                        .cornerRadius(12)
-                        .padding(.horizontal)
-
                     NovelDetailInfoSection(
                         novel: novelData,
                         userSettingStore: userSettingStore,
@@ -199,17 +192,33 @@ struct NovelDetailView: View {
                         showBlockTagToast: $showBlockTagToast,
                         showCopyToast: $showCopyToast,
                         navigateToUserId: $navigateToUserId,
-                        isCommentsPanelPresented: $showComments
+                        isCommentsPanelPresented: $showComments,
+                        onStartReading: {
+                            navigateToReaderId = novelData.id
+                        }
                     )
                     .padding(.horizontal)
+
+                    NovelDetailCoverSection(
+                        novel: novelData,
+                        coverMaxHeight: 220,
+                        onStartReading: {
+                            navigateToReaderId = novelData.id
+                        },
+                        showsStartReadingButton: false
+                    )
+                    .frame(maxWidth: .infinity)
+                    .background(Color(uiColor: .secondarySystemGroupedBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    .padding(.horizontal)
                 }
-                .padding(.vertical)
+                .padding(.vertical, 12)
             }
             .navigationBarTitleDisplayMode(.inline)
             #endif
         }
         #if os(iOS)
-        .toolbarBackground(.hidden, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
         #endif
         .toolbar {
             ToolbarItem(placement: .primaryAction) {

@@ -3,8 +3,10 @@ import SwiftUI
 struct NovelDetailCoverSection: View {
     let novel: Novel
     var coverAspectRatio: CGFloat?
+    var coverMaxHeight: CGFloat?
     var onCoverSizeChange: ((CGSize) -> Void)?
     var onStartReading: (() -> Void)?
+    var showsStartReadingButton = true
 
     @State private var savedIndex: Int?
     @State private var savedTotal: Int?
@@ -16,8 +18,10 @@ struct NovelDetailCoverSection: View {
         VStack(spacing: 0) {
             coverImage
 
-            startReadingButton
-                .padding(.top, 24)
+            if showsStartReadingButton {
+                startReadingButton
+                    .padding(.top, 24)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .top)
         .onAppear {
@@ -58,6 +62,8 @@ struct NovelDetailCoverSection: View {
             },
             expiration: DefaultCacheExpiration.novel
         )
+        .frame(maxWidth: .infinity)
+        .frame(maxHeight: coverMaxHeight)
     }
 
     private var startReadingButton: some View {

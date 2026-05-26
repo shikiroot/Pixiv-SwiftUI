@@ -15,6 +15,7 @@ struct NovelDetailInfoSection: View {
     @Binding var showCopyToast: Bool
     @Binding var navigateToUserId: String?
     @Binding var isCommentsPanelPresented: Bool
+    let onStartReading: () -> Void
 
     @State private var isFollowLoading = false
 
@@ -158,44 +159,37 @@ struct NovelDetailInfoSection: View {
 
     private var actionButtons: some View {
         HStack(spacing: 12) {
+            actionButton(
+                title: String(localized: "阅读"),
+                systemImage: "book.closed",
+                foregroundColor: colorScheme == .dark ? .black : .white,
+                backgroundColor: themeManager.currentColor,
+                action: onStartReading
+            )
+
             #if os(iOS)
-            Button(action: { isCommentsPanelPresented = true }) {
-                HStack {
-                    Image(systemName: "bubble.left.and.bubble.right")
-                    Text(String(localized: "查看评论"))
-                    if let totalComments = totalComments, totalComments > 0 {
-                        Text("(\(totalComments))")
-                            .foregroundColor(.secondary)
-                    }
-                }
-                .font(.subheadline)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 10)
-                .background(Color.gray.opacity(colorScheme == .dark ? 0.3 : 0.1))
-                .cornerRadius(8)
+            actionButton(
+                title: commentsButtonTitle,
+                systemImage: "bubble.left.and.bubble.right",
+                foregroundColor: .primary,
+                backgroundColor: Color.gray.opacity(colorScheme == .dark ? 0.3 : 0.1)
+            ) {
+                isCommentsPanelPresented = true
             }
-            .buttonStyle(.plain)
             #endif
 
-            Button(action: {
+            actionButton(
+                title: isBookmarked ? String(localized: "取消收藏") : String(localized: "收藏"),
+                systemImage: bookmarkIconName,
+                foregroundColor: colorScheme == .dark ? .black : .white,
+                backgroundColor: isBookmarked ? themeManager.currentColor.opacity(0.7) : themeManager.currentColor
+            ) {
                 if isBookmarked {
                     toggleBookmark(forceUnbookmark: true)
                 } else {
                     toggleBookmark(isPrivate: defaultBookmarkIsPrivate)
                 }
-            }) {
-                HStack {
-                    Image(systemName: bookmarkIconName)
-                    Text(isBookmarked ? String(localized: "取消收藏") : String(localized: "收藏"))
-                }
-                .font(.subheadline)
-                .foregroundColor(colorScheme == .dark ? .black : .white)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 10)
-                .background(isBookmarked ? themeManager.currentColor.opacity(0.7) : themeManager.currentColor)
-                .cornerRadius(8)
             }
-            .buttonStyle(.plain)
             .sensoryFeedback(.impact(weight: .light), trigger: isBookmarked)
             .contextMenu {
                 if isBookmarked {
@@ -224,6 +218,37 @@ struct NovelDetailInfoSection: View {
         .padding(.vertical, 8)
     }
 
+    private var commentsButtonTitle: String {
+        if let totalComments = totalComments, totalComments > 0 {
+            return "\(String(localized: "查看评论")) (\(totalComments))"
+        }
+        return String(localized: "查看评论")
+    }
+
+    private func actionButton(
+        title: String,
+        systemImage: String,
+        foregroundColor: Color,
+        backgroundColor: Color,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            HStack(spacing: 6) {
+                Image(systemName: systemImage)
+                Text(title)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
+            }
+            .font(.subheadline)
+            .foregroundColor(foregroundColor)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 10)
+            .background(backgroundColor)
+            .cornerRadius(8)
+        }
+        .buttonStyle(.plain)
+    }
+
     private var isAI: Bool {
         novel.novelAIType == 2
     }
@@ -246,12 +271,7 @@ struct NovelDetailInfoSection: View {
                 .buttonStyle(.plain)
             }
 
-            HStack(spacing: 4) {
-                Image(systemName: "text.alignleft")
-                    .font(.caption2)
-                Text(formatTextLength(novel.textLength))
-                    .font(.caption)
-            }
+            NovelTextLengthLabel(length: novel.textLength, font: .caption, iconFont: .caption2)
 
             HStack(spacing: 4) {
                 Image(systemName: "eye.fill")
@@ -331,15 +351,6 @@ struct NovelDetailInfoSection: View {
             TranslatableText(text: novel.caption, font: .body)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
-    }
-
-    private func formatTextLength(_ length: Int) -> String {
-        if length >= 10000 {
-            return String(format: "%.1f万字", Double(length) / 10000)
-        } else if length >= 1000 {
-            return String(format: "%.1f千字", Double(length) / 1000)
-        }
-        return "\(length)字"
     }
 
     private func formatDateTime(_ dateString: String) -> String {
@@ -523,6 +534,7 @@ struct NovelDetailInfoSection: View {
         showBlockTagToast: .constant(false),
         showCopyToast: .constant(false),
         navigateToUserId: .constant(nil),
-        isCommentsPanelPresented: .constant(false)
+        isCommentsPanelPresented: .constant(false),
+        onStartReading: {}
     )
 }
