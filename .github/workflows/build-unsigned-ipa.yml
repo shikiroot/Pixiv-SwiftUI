@@ -38,20 +38,66 @@ jobs:
           xcodebuild -version
           xcodebuild -showsdks
 
-      - name: Build unsigned ipa with project script
+      - name: Build unsigned ipa
         id: build
         shell: bash
         run: |
           set -euo pipefail
           ARTIFACTS_DIR="$GITHUB_WORKSPACE/artifacts"
           EXPORT_DIR="$ARTIFACTS_DIR/unsigned-ipa"
+          BUILD_DIR="$GITHUB_WORKSPACE/build"
+          DERIVED_DATA_PATH="$BUILD_DIR/derived_data"
+          PROJECT_FILE="Pixiv-SwiftUI.xcodeproj"
+          SCHEME_NAME="Release"
+          CONFIGURATION="Release"
+          JOBS="$(sysctl -n hw.ncpu)"
           mkdir -p "$ARTIFACTS_DIR"
           mkdir -p "$EXPORT_DIR"
-          touch "$ARTIFACTS_DIR/build-ipa.log"
-          ./scripts/build_ipa.sh --clean -v 2>&1 | tee "$ARTIFACTS_DIR/build-ipa.log"
+          mkdir -p "$BUILD_DIR"
+
+          XCODEBUILD_CMD=(
+            xcodebuild
+            -project "$PROJECT_FILE"
+            -scheme "$SCHEME_NAME"
+            -sdk iphoneos
+            -configuration "$CONFIGURATION"
+            -destination "generic/platform=iOS"
+            -derivedDataPath "$DERIVED_DATA_PATH"
+            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_REQUIRED=NO
+            CODE_SIGN_IDENTITY=
+            -jobs "$JOBS"
+            -skipPackagePluginValidation
+          )
+
+          "${XCODEBUILD_CMD[@]}" clean build 2>&1 | tee "$ARTIFACTS_DIR/build-ipa.log"
+
+          rm -rf "$BUILD_DIR/Payload"
+          mkdir -p "$BUILD_DIR/Payload"
+
+          APP_PATH="$(find "$DERIVED_DATA_PATH" -type d -path "*/Release-iphoneos/${APP_NAME}.app" | head -n 1)"
+          if [ -z "$APP_PATH" ]; then
+            echo "Failed to locate built app in $DERIVED_DATA_PATH" >&2
+            find "$DERIVED_DATA_PATH" -maxdepth 5 -type d | sort
+            exit 1
+          fi
+
+          cp -R "$APP_PATH" "$BUILD_DIR/Payload/"
+
+          if [ ! -f "$BUILD_DIR/Payload/${APP_NAME}.app/${APP_NAME}" ]; then
+            echo "Missing app executable after packaging copy" >&2
+            exit 1
+          fi
+
+          (
+            cd "$BUILD_DIR"
+            rm -f "${APP_NAME}.ipa"
+            /usr/bin/zip -9 -r "${APP_NAME}.ipa" Payload
+          )
+
           RELEASE_NAME="${GITHUB_REF_NAME:-manual}"
           OUTPUT_IPA="$EXPORT_DIR/$APP_NAME-$RELEASE_NAME-unsigned.ipa"
-          cp "build/$APP_NAME.ipa" "$OUTPUT_IPA"
+          cp "$BUILD_DIR/$APP_NAME.ipa" "$OUTPUT_IPA"
           echo "output_ipa=$OUTPUT_IPA" >> "$GITHUB_OUTPUT"
           ls -lh "$OUTPUT_IPA"
 
