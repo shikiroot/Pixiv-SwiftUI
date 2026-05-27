@@ -1,15 +1,18 @@
-## Build Commands
+## Local Validation
 
 ```bash
-# macOS build
-xcodebuild -project Pixiv-SwiftUI.xcodeproj -scheme Debug -configuration Debug -destination 'platform=macOS' build 2>&1 | grep -E "(error:|warning:|BUILD SUCCEEDED|BUILD FAILED)"
+# DO NOT run xcodebuild or any other local build command in this repository.
+# Prefer static validation only.
 
-# iOS Simulator build (iPhone 17)
-xcodebuild -project Pixiv-SwiftUI.xcodeproj -scheme Debug -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 17' build 2>&1 | grep -E "(error:|warning:|BUILD SUCCEEDED|BUILD FAILED)"
+# Lint
+swiftlint lint
 
-# Full verbose build
-xcodebuild -project Pixiv-SwiftUI.xcodeproj -scheme Debug -configuration Debug -destination 'platform=macOS' build
+# Whitespace / patch sanity
+git diff --check
 ```
+
+- Never run `xcodebuild`, `swift build`, or any other local build command in this repository.
+- Prefer static inspection, targeted file reads, `swiftlint lint`, `git diff --check`, and similar non-build validation.
 
 ## SwiftLint
 
@@ -56,7 +59,7 @@ let w = 100
 
 ### Code Formatting
 
-Use `swiftlint --fix` to format code.
+Use `swiftlint --fix` only when formatting is actually needed. Do not use it as a substitute for a local build.
 
 ### Architecture Pattern (MVVM + Store)
 ```
@@ -114,6 +117,7 @@ Apple unified system versions to 26 after iOS 18, iPadOS 18, and macOS 15. Targe
 - Debug logs can be added; don't remove existing logs
 - Unless the user explicitly requests, you should not actively modify `Localizable.xcstrings` file.
 -If you have questions that require user confirmation, use the question tool to organize them instead of directly outputting them.
+- Do not perform any local build or simulator run unless the user explicitly reverses this rule in a later message.
 
 ## Notes
 - No unit test target exists in this project
