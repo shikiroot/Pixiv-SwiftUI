@@ -1,1 +1,0 @@
-ajax api documentation and code are from https://github.com/daydreamer-json/pixiv-ajax-api-docs

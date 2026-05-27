@@ -105,10 +105,6 @@ Shared/                   # Reusable components
 ## System Version Note
 Apple unified system versions to 26 after iOS 18, iPadOS 18, and macOS 15. Target iOS 26+, macOS 26+.
 
-## Reference document
-
-Refer to the documentation located in docs/agent/ when necessary.
-
 ## Git
 
 - NEVER proactively execute git commit or git push, even if it has been done before in the conversation history.
@@ -116,8 +112,6 @@ Refer to the documentation located in docs/agent/ when necessary.
 
 ## General Guidelines
 - Debug logs can be added; don't remove existing logs
-- Reference ./pixivpy for Pixiv App API
-- Reference ./PixivFE and ./ajax-api-docs for Pixiv Web Ajax API
 - Unless the user explicitly requests, you should not actively modify `Localizable.xcstrings` file.
 -If you have questions that require user confirmation, use the question tool to organize them instead of directly outputting them.
 
