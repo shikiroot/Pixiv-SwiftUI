@@ -6,14 +6,10 @@ struct AboutSettingsView: View {
 
     var body: some View {
         VStack {
-            Image("launch")
-                .resizable()
-                .frame(width: iconSize, height: iconSize)
-                .padding(.top, topPadding)
-
             Text("Pixwift")
                 .font(.title2)
                 .fontWeight(.semibold)
+                .padding(.top, topPadding)
                 .padding(.bottom, bottomPadding)
 
             Form {
@@ -36,14 +32,6 @@ struct AboutSettingsView: View {
         .safeAreaInset(edge: .bottom) {
             resetButton
         }
-        #endif
-    }
-
-    private var iconSize: CGFloat {
-        #if os(macOS)
-        80
-        #else
-        64
         #endif
     }
 
