@@ -72,7 +72,12 @@ struct NovelSeriesCard: View {
                     rowHeight: Layout.rowHeight
                 )
             }
-            .frame(maxWidth: .infinity, height: Layout.thumbnailSize, alignment: .topLeading)
+            .frame(
+                maxWidth: .infinity,
+                minHeight: Layout.thumbnailSize,
+                maxHeight: Layout.thumbnailSize,
+                alignment: .topLeading
+            )
 
             Spacer()
         }
