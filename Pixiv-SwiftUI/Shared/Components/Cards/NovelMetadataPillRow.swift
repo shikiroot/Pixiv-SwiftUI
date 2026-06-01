@@ -1,13 +1,10 @@
 import SwiftUI
 
 struct NovelMetadataPillRow: View {
-    private enum Layout {
-        static let rowHeight: CGFloat = 22
-    }
-
     let texts: [String]
     var placeholder: String
     var maxCount: Int? = nil
+    var rowHeight: CGFloat = 17
 
     private var displayTexts: [String] {
         let normalized = texts
@@ -27,16 +24,17 @@ struct NovelMetadataPillRow: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 4) {
                 ForEach(Array(displayTexts.enumerated()), id: \.offset) { _, text in
-                    NovelMetadataPill(text: text)
+                    NovelMetadataPill(text: text, rowHeight: rowHeight)
                 }
             }
         }
-        .frame(maxWidth: .infinity, minHeight: Layout.rowHeight, maxHeight: Layout.rowHeight, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: rowHeight, maxHeight: rowHeight, alignment: .leading)
     }
 }
 
 private struct NovelMetadataPill: View {
     let text: String
+    let rowHeight: CGFloat
 
     var body: some View {
         Text(text)
@@ -44,9 +42,10 @@ private struct NovelMetadataPill: View {
             .foregroundColor(.secondary)
             .lineLimit(1)
             .padding(.horizontal, 6)
-            .padding(.vertical, 2)
+            .padding(.vertical, 1)
             .background(Color.secondary.opacity(0.1))
             .clipShape(Capsule())
+            .frame(height: rowHeight)
     }
 }
 

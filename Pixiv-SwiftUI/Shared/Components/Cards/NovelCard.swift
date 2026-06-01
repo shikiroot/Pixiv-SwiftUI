@@ -5,6 +5,8 @@ struct NovelCard: View {
         static let contentWidth: CGFloat = 100
         static let cardWidth: CGFloat = 120
         static let imageSize: CGFloat = 100
+        static let verticalSpacing: CGFloat = 4
+        static let rowHeight: CGFloat = 17
     }
 
     #if os(macOS)
@@ -37,31 +39,35 @@ struct NovelCard: View {
             .frame(width: Layout.imageSize, height: Layout.imageSize)
             .clipShape(RoundedRectangle(cornerRadius: 8))
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
                 NovelMetadataPillRow(
                     texts: [seriesText],
                     placeholder: "无系列",
-                    maxCount: 1
+                    maxCount: 1,
+                    rowHeight: Layout.rowHeight
                 )
                 .frame(width: Layout.contentWidth, alignment: .leading)
 
                 Text(novel.title)
                     .font(.caption)
                     .fontWeight(.semibold)
-                    .lineLimit(2, reservesSpace: true)
+                    .lineLimit(1, reservesSpace: true)
                     .frame(width: Layout.contentWidth, alignment: .leading)
                     .multilineTextAlignment(.leading)
+                    .frame(height: Layout.rowHeight, alignment: .leading)
 
                 Text(novel.user.name)
                     .font(.caption2)
                     .foregroundColor(.secondary)
                     .lineLimit(1)
                     .frame(width: Layout.contentWidth, alignment: .leading)
+                    .frame(height: Layout.rowHeight, alignment: .leading)
 
                 NovelMetadataPillRow(
                     texts: tagTexts,
                     placeholder: "无标签",
-                    maxCount: 3
+                    maxCount: 3,
+                    rowHeight: Layout.rowHeight
                 )
                 .frame(width: Layout.contentWidth, alignment: .leading)
             }

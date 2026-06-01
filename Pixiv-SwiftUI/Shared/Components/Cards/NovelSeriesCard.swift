@@ -3,6 +3,8 @@ import SwiftUI
 struct NovelSeriesCard: View {
     private enum Layout {
         static let thumbnailSize: CGFloat = 80
+        static let verticalSpacing: CGFloat = 4
+        static let rowHeight: CGFloat = 17
     }
 
     #if os(macOS)
@@ -41,32 +43,36 @@ struct NovelSeriesCard: View {
             .frame(width: Layout.thumbnailSize, height: Layout.thumbnailSize)
             .clipShape(RoundedRectangle(cornerRadius: 8))
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
                 NovelMetadataPillRow(
                     texts: [seriesText],
                     placeholder: "无系列",
-                    maxCount: 1
+                    maxCount: 1,
+                    rowHeight: Layout.rowHeight
                 )
 
                 Text(titleText)
-                    .font(.body)
+                    .font(.subheadline)
                     .fontWeight(.medium)
                     .foregroundColor(.primary)
-                    .lineLimit(2, reservesSpace: true)
+                    .lineLimit(1, reservesSpace: true)
                     .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, minHeight: Layout.rowHeight, maxHeight: Layout.rowHeight, alignment: .leading)
 
                 Text(novel.user.name)
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .lineLimit(1, reservesSpace: true)
+                    .frame(maxWidth: .infinity, minHeight: Layout.rowHeight, maxHeight: Layout.rowHeight, alignment: .leading)
 
                 NovelMetadataPillRow(
                     texts: tagTexts,
                     placeholder: "无标签",
-                    maxCount: 4
+                    maxCount: 4,
+                    rowHeight: Layout.rowHeight
                 )
             }
-            .frame(maxWidth: .infinity, minHeight: Layout.thumbnailSize, alignment: .topLeading)
+            .frame(maxWidth: .infinity, height: Layout.thumbnailSize, alignment: .topLeading)
 
             Spacer()
         }
