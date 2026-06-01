@@ -144,7 +144,6 @@ struct NovelRankingListRow: View {
     var body: some View {
         NovelInfoTableRow(
             novel: novel,
-            detailStyle: .author,
             showsBookmarkSummary: true,
             bookmarkSummaryText: NumberFormatter.formatCount(novel.totalBookmarks)
         )

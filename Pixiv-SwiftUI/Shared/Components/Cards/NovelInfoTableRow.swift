@@ -1,19 +1,12 @@
 import SwiftUI
 
-enum NovelInfoDetailStyle {
-    case author
-    case metrics
-}
-
 struct NovelInfoTableRow: View {
     private enum Layout {
         static let thumbnailSize: CGFloat = 80
-        static let tagRowHeight: CGFloat = 22
     }
 
     let novel: Novel
     var titlePrefix: String?
-    var detailStyle: NovelInfoDetailStyle = .author
     var showsBookmarkSummary = false
     var isBookmarked: Bool? = nil
     var bookmarkSummaryText: String? = nil
@@ -33,6 +26,15 @@ struct NovelInfoTableRow: View {
         return novel.title
     }
 
+    private var seriesText: String {
+        let title = novel.series?.title?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return title.isEmpty ? "无系列" : title
+    }
+
+    private var tagTexts: [String] {
+        novel.tags.map(\.name)
+    }
+
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             CachedAsyncImage(
@@ -43,8 +45,9 @@ struct NovelInfoTableRow: View {
             .clipShape(RoundedRectangle(cornerRadius: 8))
 
             VStack(alignment: .leading, spacing: 4) {
+                seriesColumn
                 titleColumn
-                detailColumn
+                authorColumn
                 tagColumn
             }
             .frame(maxWidth: .infinity, minHeight: Layout.thumbnailSize, alignment: .topLeading)
@@ -68,54 +71,29 @@ struct NovelInfoTableRow: View {
             .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    @ViewBuilder
-    private var detailColumn: some View {
-        switch detailStyle {
-        case .author:
-            Text(novel.user.name)
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .lineLimit(1, reservesSpace: true)
-                .multilineTextAlignment(.leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
-        case .metrics:
-            HStack(spacing: 4) {
-                NovelTextLengthLabel(length: novel.textLength, font: .caption, iconFont: .caption2)
-                Text("/ \(NumberFormatter.formatCount(novel.totalBookmarks))收藏 / \(NumberFormatter.formatCount(novel.totalView))阅读")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
+    private var seriesColumn: some View {
+        NovelMetadataPillRow(
+            texts: [seriesText],
+            placeholder: "无系列",
+            maxCount: 1
+        )
     }
 
-    @ViewBuilder
+    private var authorColumn: some View {
+        Text(novel.user.name)
+            .font(.caption)
+            .foregroundColor(.secondary)
+            .lineLimit(1, reservesSpace: true)
+            .multilineTextAlignment(.leading)
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
     private var tagColumn: some View {
-        if novel.tags.isEmpty {
-            Text("—")
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .lineLimit(1, reservesSpace: true)
-                .frame(maxWidth: .infinity, minHeight: Layout.tagRowHeight, alignment: .leading)
-        } else {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 4) {
-                    ForEach(novel.tags.prefix(4), id: \.name) { tag in
-                        Text(tag.name)
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                            .lineLimit(1)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(Color.secondary.opacity(0.1))
-                            .clipShape(Capsule())
-                    }
-                }
-            }
-            .frame(maxWidth: .infinity, minHeight: Layout.tagRowHeight, maxHeight: Layout.tagRowHeight, alignment: .leading)
-        }
+        NovelMetadataPillRow(
+            texts: tagTexts,
+            placeholder: "无标签",
+            maxCount: 4
+        )
     }
 
     private var bookmarkColumn: some View {

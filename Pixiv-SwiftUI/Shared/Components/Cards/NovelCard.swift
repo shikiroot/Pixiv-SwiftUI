@@ -19,6 +19,15 @@ struct NovelCard: View {
         _isBookmarked = State(initialValue: novel.isBookmarked)
     }
 
+    private var seriesText: String {
+        let title = novel.series?.title?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return title.isEmpty ? "无系列" : title
+    }
+
+    private var tagTexts: [String] {
+        novel.tags.map(\.name)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             CachedAsyncImage(
@@ -29,6 +38,13 @@ struct NovelCard: View {
             .clipShape(RoundedRectangle(cornerRadius: 8))
 
             VStack(alignment: .leading, spacing: 4) {
+                NovelMetadataPillRow(
+                    texts: [seriesText],
+                    placeholder: "无系列",
+                    maxCount: 1
+                )
+                .frame(width: Layout.contentWidth, alignment: .leading)
+
                 Text(novel.title)
                     .font(.caption)
                     .fontWeight(.semibold)
@@ -42,21 +58,12 @@ struct NovelCard: View {
                     .lineLimit(1)
                     .frame(width: Layout.contentWidth, alignment: .leading)
 
-                HStack(spacing: 2) {
-                    NovelTextLengthLabel(length: novel.textLength, font: .caption2, iconFont: .caption2)
-
-                    Spacer()
-
-                    Image(systemName: isBookmarked ? "heart.fill" : "heart")
-                        .foregroundColor(isBookmarked ? .red : .secondary)
-                        .font(.system(size: 10))
-                    Text(NumberFormatter.formatCount(novel.totalBookmarks))
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.8)
-                }
-                .frame(width: Layout.contentWidth)
+                NovelMetadataPillRow(
+                    texts: tagTexts,
+                    placeholder: "无标签",
+                    maxCount: 3
+                )
+                .frame(width: Layout.contentWidth, alignment: .leading)
             }
         }
         .frame(width: Layout.cardWidth)

@@ -1,6 +1,10 @@
 import SwiftUI
 
 struct NovelSeriesCard: View {
+    private enum Layout {
+        static let thumbnailSize: CGFloat = 80
+    }
+
     #if os(macOS)
     @Environment(\.openWindow) var openWindow
     #endif
@@ -15,44 +19,58 @@ struct NovelSeriesCard: View {
         _isBookmarked = State(initialValue: novel.isBookmarked)
     }
 
+    private var seriesText: String {
+        let title = novel.series?.title?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return title.isEmpty ? "无系列" : title
+    }
+
+    private var titleText: String {
+        "#\(index + 1) \(novel.title)"
+    }
+
+    private var tagTexts: [String] {
+        novel.tags.map(\.name)
+    }
+
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(alignment: .top, spacing: 12) {
             CachedAsyncImage(
                 urlString: novel.imageUrls.medium,
                 expiration: DefaultCacheExpiration.novel
             )
-            .frame(width: 80, height: 80)
-            .cornerRadius(8)
+            .frame(width: Layout.thumbnailSize, height: Layout.thumbnailSize)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
 
-            VStack(alignment: .leading, spacing: 6) {
-                Text("#\(index + 1) \(novel.title)")
-                    .font(.headline)
+            VStack(alignment: .leading, spacing: 4) {
+                NovelMetadataPillRow(
+                    texts: [seriesText],
+                    placeholder: "无系列",
+                    maxCount: 1
+                )
+
+                Text(titleText)
+                    .font(.body)
+                    .fontWeight(.medium)
                     .foregroundColor(.primary)
-                    .lineLimit(2)
+                    .lineLimit(2, reservesSpace: true)
+                    .multilineTextAlignment(.leading)
 
                 Text(novel.user.name)
                     .font(.caption)
                     .foregroundColor(.secondary)
+                    .lineLimit(1, reservesSpace: true)
 
-                HStack(spacing: 12) {
-                    NovelTextLengthLabel(length: novel.textLength, font: .caption, iconFont: .caption2)
-
-                    HStack(spacing: 4) {
-                        Image(systemName: isBookmarked ? "heart.fill" : "heart")
-                            .font(.caption2)
-                            .foregroundColor(isBookmarked ? .red : .secondary)
-                        Text(NumberFormatter.formatCount(novel.totalBookmarks))
-                            .font(.caption)
-                    }
-
-                    Spacer()
-                }
-                .foregroundColor(.secondary)
+                NovelMetadataPillRow(
+                    texts: tagTexts,
+                    placeholder: "无标签",
+                    maxCount: 4
+                )
             }
+            .frame(maxWidth: .infinity, minHeight: Layout.thumbnailSize, alignment: .topLeading)
 
             Spacer()
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 8)
         .contextMenu {
             #if os(macOS)
             Button {

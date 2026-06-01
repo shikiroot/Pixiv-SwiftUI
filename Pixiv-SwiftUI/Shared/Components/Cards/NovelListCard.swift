@@ -18,7 +18,6 @@ struct NovelListCard: View {
     var body: some View {
         NovelInfoTableRow(
             novel: novel,
-            detailStyle: .author,
             showsBookmarkSummary: showsBookmarkCount,
             isBookmarked: isBookmarked,
             bookmarkSummaryText: NumberFormatter.formatCount(novel.totalBookmarks)
