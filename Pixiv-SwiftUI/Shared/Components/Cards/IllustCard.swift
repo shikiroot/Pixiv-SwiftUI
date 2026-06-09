@@ -83,36 +83,15 @@ struct IllustCard: View {
 
                 HStack(spacing: 4) {
                     if isManga {
-                        Text("漫画")
-                            .font(.caption2)
-                            .fontWeight(.bold)
-                            .foregroundStyle(.primary)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 3)
-                            .background(.ultraThinMaterial)
-                            .cornerRadius(8)
+                        Text("漫画").badgeStyle()
                     }
 
                     if isUgoira {
-                        Text("动图")
-                            .font(.caption2)
-                            .fontWeight(.bold)
-                            .foregroundStyle(.primary)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 3)
-                            .background(.ultraThinMaterial)
-                            .cornerRadius(8)
+                        Text("动图").badgeStyle()
                     }
 
                     if isAI {
-                        Text("AI")
-                            .font(.caption2)
-                            .fontWeight(.bold)
-                            .foregroundStyle(.primary)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 3)
-                            .background(.ultraThinMaterial)
-                            .cornerRadius(8)
+                        Text("AI").badgeStyle()
                     }
                 }
                 .padding(6)
@@ -120,13 +99,7 @@ struct IllustCard: View {
 
                 if illust.pageCount > 1 {
                     Text("\(illust.pageCount)")
-                        .font(.caption2)
-                        .fontWeight(.bold)
-                        .foregroundStyle(.primary)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 3)
-                        .background(.ultraThinMaterial)
-                        .cornerRadius(8)
+                        .badgeStyle()
                         .padding(6)
                 }
 
@@ -135,14 +108,8 @@ struct IllustCard: View {
                         Image(systemName: "heart.fill")
                             .font(.caption2)
                         Text(NumberFormatter.formatCount(illust.totalBookmarks))
-                            .font(.caption2)
-                            .fontWeight(.bold)
                     }
-                    .foregroundStyle(.primary)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 3)
-                    .background(.ultraThinMaterial)
-                    .cornerRadius(8)
+                    .badgeStyle()
                     .padding(6)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
                 }
@@ -188,9 +155,16 @@ struct IllustCard: View {
         #endif
         .frame(width: columnWidth)
         .cornerRadius(16)
-        .shadow(color: .black.opacity(0.2), radius: 2, x: 0, y: 2)
+        .background(
+            CardShadowView(
+                cornerRadius: 16,
+                shadowColor: .black.opacity(0.2),
+                shadowRadius: 2,
+                shadowOffset: CGSize(width: 0, height: 2)
+            )
+        )
+        #if os(macOS)
         .contextMenu {
-            #if os(macOS)
             Button {
                 openWindow(id: "illust-detail", value: illust.id)
             } label: {
@@ -198,7 +172,6 @@ struct IllustCard: View {
             }
 
             Divider()
-            #endif
 
             if illust.isBookmarked {
                 if illust.bookmarkRestrict == "private" {
@@ -255,22 +228,11 @@ struct IllustCard: View {
                         avatarUrl: illust.user.profileImageUrls?.medium
                     )
                 } label: {
-                    Label("屏蔽此作者", systemImage: "person.slash")
-                }
-
-                Menu {
-                    ForEach(illust.tags, id: \.name) { tag in
-                        Button {
-                            try? UserSettingStore.shared.addBlockedTagWithInfo(tag.name, translatedName: tag.translatedName)
-                        } label: {
-                            Text(tag.translatedName ?? tag.name)
-                        }
-                    }
-                } label: {
-                    Label("屏蔽此标签", systemImage: "tag.slash")
+                    Label("屏蔽此用户", systemImage: "person.slash")
                 }
             }
         }
+        #endif
     }
 
     private func toggleBookmark(isPrivate: Bool = false, forceUnbookmark: Bool = false) {
@@ -457,4 +419,20 @@ struct IllustCard: View {
     IllustCard(illust: illust, columnCount: 2)
         .padding()
         .frame(width: 390)
+}
+
+// MARK: - Badge Style
+
+extension View {
+    /// 卡片标签样式：圆角矩形背景 + caption2 粗体字
+    ///
+    /// 使用 `.background(style:in:)` 替代 `.background() + .cornerRadius()` 组合，
+    /// 直接绘制圆角矩形填充，避免 cornerRadius 产生的 offscreen mask pass。
+    fileprivate func badgeStyle() -> some View {
+        font(.caption2.weight(.bold))
+            .foregroundStyle(.primary)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 3)
+            .background(.black.opacity(0.25), in: RoundedRectangle(cornerRadius: 8))
+    }
 }
